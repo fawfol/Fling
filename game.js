@@ -104,7 +104,7 @@ const config = {
   scene: { preload, create, update }
 };
 
-// Game state
+//Game state
 let player, needle, powerMeter, powerLevel = 1, directionVector, canThrow = true;
 let leftEye, rightEye, leftPupil, rightPupil;
 let currentMap = null;
@@ -117,7 +117,6 @@ const game = new Phaser.Game(config);
 
 function preload() {
   this.load.image('forestBase', 'assets/8bit-jungle.jpg');
-  this.load.image('eyeball', 'assets/eyeball.jpeg');
   console.log('Preloading assets...');
 }
 
