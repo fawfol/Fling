@@ -104,14 +104,54 @@ function create() {
   });
 
   //add surfaces (unchanged)
-  addSurface(this, 250, 4000, 500, 40, 0x654321, 0.4, 2.5);
-  addSurface(this, 10, 2000, 20, 4000, 0x8888ff, 0.4, 0.5);
-  addSurface(this, 490, 2000, 20, 4000, 0x8888ff, 0.4, 0.5);
-  addSurface(this, 250, 3950, 200, 20, 0x00ff00, 0.2, 0.95);
-  addSurface(this, 450, 3750, 200, 20, 0xaaaaaa, 0.6, 0.8);
-  addSurface(this, 150, 3550, 200, 20, 0x000fff, 0.8, 0.1);
-  addSurface(this, 350, 3350, 200, 20, 0x996633, 0.1, 1.2);
-  addSurface(this, 250, 3150, 200, 20, 0x00ffcc, 1.2, 0.6);
+ { type: 'ground', x: 250, y: 4000, w: 500, h: 40, color: 0x654321, bounce: 0.4, friction: 2.5 },
+      { type: 'wall', x: 10, y: 2000, w: 20, h: 4000, color: 0x444444, bounce: 0.4, friction: 0.5 },
+      { type: 'wall', x: 490, y: 2000, w: 20, h: 4000, color: 0x444444, bounce: 0.4, friction: 0.5 },
+      
+      //ftarting platforms
+      { type: 'platform', x: 150, y: 3850, w: 120, h: 15, color: 0x8B4513, bounce: 0.3, friction: 1.0 },
+      { type: 'platform', x: 350, y: 3700, w: 120, h: 15, color: 0x8B4513, bounce: 0.3, friction: 1.0 },
+      { type: 'platform', x: 100, y: 3550, w: 100, h: 15, color: 0x8B4513, bounce: 0.3, friction: 1.0 },
+      
+      //first Challenge Section
+      { type: 'narrow', x: 400, y: 3400, w: 80, h: 12, color: 0x696969, bounce: 0.2, friction: 1.2 },
+      { type: 'narrow', x: 150, y: 3250, w: 70, h: 12, color: 0x696969, bounce: 0.2, friction: 1.2 },
+      { type: 'narrow', x: 380, y: 3100, w: 90, h: 12, color: 0x696969, bounce: 0.2, friction: 1.2 },
+      { type: 'bouncy', x: 200, y: 2950, w: 100, h: 15, color: 0x00ff00, bounce: 0.8, friction: 0.1 },
+      
+      // ice Section
+      { type: 'ice', x: 350, y: 2800, w: 120, h: 12, color: 0x87CEEB, bounce: 0.6, friction: 0.05 },
+      { type: 'ice', x: 120, y: 2650, w: 100, h: 12, color: 0x87CEEB, bounce: 0.6, friction: 0.05 },
+      { type: 'ice', x: 400, y: 2500, w: 80, h: 12, color: 0x87CEEB, bounce: 0.6, friction: 0.05 },
+      { type: 'safe', x: 250, y: 2350, w: 150, h: 15, color: 0x8B4513, bounce: 0.3, friction: 1.0 },
+      
+      //precision Section
+      { type: 'tiny', x: 450, y: 2200, w: 50, h: 10, color: 0xff6b6b, bounce: 0.1, friction: 1.5 },
+      { type: 'tiny', x: 50, y: 2050, w: 50, h: 10, color: 0xff6b6b, bounce: 0.1, friction: 1.5 },
+      { type: 'tiny', x: 450, y: 1900, w: 45, h: 10, color: 0xff6b6b, bounce: 0.1, friction: 1.5 },
+      { type: 'tiny', x: 80, y: 1750, w: 60, h: 10, color: 0xff6b6b, bounce: 0.1, friction: 1.5 },
+      
+      //bouncy Castle
+      { type: 'super_bouncy', x: 350, y: 1600, w: 100, h: 15, color: 0xff1493, bounce: 1.2, friction: 0.3 },
+      { type: 'super_bouncy', x: 150, y: 1450, w: 100, h: 15, color: 0xff1493, bounce: 1.2, friction: 0.3 },
+      { type: 'super_bouncy', x: 400, y: 1300, w: 80, h: 15, color: 0xff1493, bounce: 1.2, friction: 0.3 },
+      
+      //mixed Staircase
+      { type: 'platform', x: 80, y: 1150, w: 90, h: 12, color: 0x8B4513, bounce: 0.3, friction: 1.0 },
+      { type: 'narrow', x: 200, y: 1000, w: 80, h: 12, color: 0x696969, bounce: 0.2, friction: 1.2 },
+      { type: 'ice', x: 350, y: 850, w: 100, h: 12, color: 0x87CEEB, bounce: 0.6, friction: 0.05 },
+      { type: 'tiny', x: 150, y: 700, w: 70, h: 12, color: 0xff6b6b, bounce: 0.1, friction: 1.5 },
+      { type: 'safe', x: 400, y: 550, w: 80, h: 12, color: 0x8B4513, bounce: 0.3, friction: 1.0 },
+      
+      //final challenges
+      { type: 'super_bouncy', x: 100, y: 400, w: 60, h: 10, color: 0xff1493, bounce: 1.0, friction: 0.2 },
+      { type: 'ice', x: 250, y: 300, w: 50, h: 10, color: 0x87CEEB, bounce: 0.7, friction: 0.05 },
+      { type: 'tiny', x: 420, y: 200, w: 70, h: 10, color: 0xff6b6b, bounce: 0.1, friction: 1.8 },
+      { type: 'safe', x: 180, y: 50, w: 80, h: 12, color: 0x8B4513, bounce: 0.3, friction: 1.0 },
+      { type: 'platform', x: 350, y: -100, w: 90, h: 12, color: 0x696969, bounce: 0.2, friction: 1.0 },
+      
+      //summit
+      { type: 'victory', x: 250, y: -250, w: 200, h: 20, color: 0xFFD700, bounce: 0.0, friction: 2.0 }
 
   //update directionVector on pointer move (world cords)
   this.input.on('pointermove', pointer => {
