@@ -1,8 +1,8 @@
-// Map definitions - separated from game logic
+//nap definitions - separated from game logic
 const MAPS = {
-  jumpKing: {
-    name: "Jump King Tower",
-    worldBounds: { x: 0, y: -3500, width: 500, height: 8000 }, // Much taller tower
+  fling: {
+    name: "Fling Tower",
+    worldBounds: { x: 0, y: -3500, width: 500, height: 8000 }, //much taller tower
     playerStart: { x: 250, y: 4300 },
     platforms: [
       // Ground Level
@@ -10,14 +10,14 @@ const MAPS = {
       { type: 'wall', x: 10, y: 1000, w: 20, h: 6800, color: 0x444444, bounce: 0.4, friction: 0.5 },
       { type: 'wall', x: 490, y: 1000, w: 20, h: 6800, color: 0x444444, bounce: 0.4, friction: 0.5 },
       
-      // Tutorial Section (Level 1)
+      //tutorial Section (Level 1)
       { type: 'platform', x: 150, y: 4250, w: 120, h: 15, color: 0x8B4513, bounce: 0.3, friction: 1.0 },
       { type: 'platform', x: 350, y: 4100, w: 120, h: 15, color: 0x8B4513, bounce: 0.3, friction: 1.0 },
       { type: 'platform', x: 100, y: 3950, w: 100, h: 15, color: 0x8B4513, bounce: 0.3, friction: 1.0 },
       { type: 'platform', x: 400, y: 3800, w: 100, h: 15, color: 0x8B4513, bounce: 0.3, friction: 1.0 },
       { type: 'platform', x: 200, y: 3650, w: 120, h: 15, color: 0x8B4513, bounce: 0.3, friction: 1.0 },
       
-      // First Challenge - Narrow Platforms (Level 2)
+      //first Challenge - Narrow Platforms (Level 2)
       { type: 'narrow', x: 450, y: 3500, w: 70, h: 12, color: 0x696969, bounce: 0.2, friction: 1.2 },
       { type: 'narrow', x: 80, y: 3350, w: 60, h: 12, color: 0x696969, bounce: 0.2, friction: 1.2 },
       { type: 'narrow', x: 420, y: 3200, w: 65, h: 12, color: 0x696969, bounce: 0.2, friction: 1.2 },
@@ -25,14 +25,14 @@ const MAPS = {
       { type: 'narrow', x: 380, y: 2900, w: 80, h: 12, color: 0x696969, bounce: 0.2, friction: 1.2 },
       { type: 'platform', x: 200, y: 2750, w: 100, h: 15, color: 0x8B4513, bounce: 0.3, friction: 1.0 },
       
-      // Bouncy Section (Level 3)
+      //bouncy Section (Level 3)
       { type: 'bouncy', x: 400, y: 2600, w: 90, h: 15, color: 0x00ff00, bounce: 0.8, friction: 0.1 },
       { type: 'bouncy', x: 120, y: 2450, w: 80, h: 15, color: 0x00ff00, bounce: 0.8, friction: 0.1 },
       { type: 'bouncy', x: 380, y: 2300, w: 85, h: 15, color: 0x00ff00, bounce: 0.8, friction: 0.1 },
       { type: 'bouncy', x: 180, y: 2150, w: 90, h: 15, color: 0x00ff00, bounce: 0.8, friction: 0.1 },
       { type: 'safe', x: 350, y: 2000, w: 120, h: 15, color: 0x8B4513, bounce: 0.3, friction: 1.0 },
       
-      // Ice Hell (Level 4)
+      //ice Hell (Level 4)
       { type: 'ice', x: 150, y: 1850, w: 100, h: 12, color: 0x87CEEB, bounce: 0.6, friction: 0.05 },
       { type: 'ice', x: 420, y: 1700, w: 80, h: 12, color: 0x87CEEB, bounce: 0.6, friction: 0.05 },
       { type: 'ice', x: 100, y: 1550, w: 90, h: 12, color: 0x87CEEB, bounce: 0.6, friction: 0.05 },
@@ -41,7 +41,7 @@ const MAPS = {
       { type: 'ice', x: 450, y: 1100, w: 60, h: 12, color: 0x87CEEB, bounce: 0.6, friction: 0.05 },
       { type: 'safe', x: 180, y: 950, w: 140, h: 15, color: 0x8B4513, bounce: 0.3, friction: 1.0 },
       
-      // Precision Hell (Level 5)
+      //precision Hell (Level 5)
       { type: 'tiny', x: 450, y: 800, w: 45, h: 10, color: 0xff6b6b, bounce: 0.1, friction: 1.5 },
       { type: 'tiny', x: 50, y: 650, w: 40, h: 10, color: 0xff6b6b, bounce: 0.1, friction: 1.5 },
       { type: 'tiny', x: 450, y: 500, w: 35, h: 10, color: 0xff6b6b, bounce: 0.1, friction: 1.5 },
@@ -50,7 +50,7 @@ const MAPS = {
       { type: 'tiny', x: 120, y: 50, w: 45, h: 10, color: 0xff6b6b, bounce: 0.1, friction: 1.5 },
       { type: 'safe', x: 350, y: -100, w: 100, h: 15, color: 0x8B4513, bounce: 0.3, friction: 1.0 },
       
-      // Super Bouncy Castle (Level 6)
+      //super Bouncy Castle (Level 6)
       { type: 'super_bouncy', x: 180, y: -250, w: 80, h: 15, color: 0xff1493, bounce: 1.3, friction: 0.2 },
       { type: 'super_bouncy', x: 400, y: -400, w: 70, h: 15, color: 0xff1493, bounce: 1.3, friction: 0.2 },
       { type: 'super_bouncy', x: 120, y: -550, w: 75, h: 15, color: 0xff1493, bounce: 1.3, friction: 0.2 },
@@ -58,7 +58,7 @@ const MAPS = {
       { type: 'super_bouncy', x: 200, y: -850, w: 80, h: 15, color: 0xff1493, bounce: 1.3, friction: 0.2 },
       { type: 'safe', x: 350, y: -1000, w: 100, h: 15, color: 0x8B4513, bounce: 0.3, friction: 1.0 },
       
-      // Mixed Chaos (Level 7)
+      //mixed Chaos (Level 7)
       { type: 'ice', x: 150, y: -1150, w: 80, h: 12, color: 0x87CEEB, bounce: 0.6, friction: 0.05 },
       { type: 'tiny', x: 450, y: -1300, w: 40, h: 10, color: 0xff6b6b, bounce: 0.1, friction: 1.5 },
       { type: 'bouncy', x: 100, y: -1450, w: 70, h: 15, color: 0x00ff00, bounce: 0.8, friction: 0.1 },
@@ -67,7 +67,7 @@ const MAPS = {
       { type: 'ice', x: 400, y: -1900, w: 70, h: 12, color: 0x87CEEB, bounce: 0.6, friction: 0.05 },
       { type: 'safe', x: 200, y: -2050, w: 120, h: 15, color: 0x8B4513, bounce: 0.3, friction: 1.0 },
       
-      // The Gauntlet (Level 8)
+      //the Gauntlet (Level 8)
       { type: 'tiny', x: 450, y: -2200, w: 35, h: 8, color: 0xff6b6b, bounce: 0.1, friction: 1.8 },
       { type: 'super_bouncy', x: 80, y: -2350, w: 50, h: 12, color: 0xff1493, bounce: 1.4, friction: 0.1 },
       { type: 'ice', x: 420, y: -2500, w: 60, h: 10, color: 0x87CEEB, bounce: 0.7, friction: 0.03 },
@@ -76,30 +76,21 @@ const MAPS = {
       { type: 'ice', x: 150, y: -2950, w: 50, h: 10, color: 0x87CEEB, bounce: 0.8, friction: 0.02 },
       { type: 'safe', x: 350, y: -3100, w: 100, h: 15, color: 0x8B4513, bounce: 0.3, friction: 1.0 },
       
-      // Final Approach (Level 9)
+      //final Approach (Level 9)
       { type: 'narrow', x: 180, y: -3250, w: 60, h: 12, color: 0x696969, bounce: 0.2, friction: 1.2 },
       { type: 'tiny', x: 420, y: -3400, w: 45, h: 10, color: 0xff6b6b, bounce: 0.1, friction: 1.5 },
       
-      // The Summit (Level 10)
+      //the Summit (Level 10)
       { type: 'victory', x: 250, y: -3500, w: 200, h: 25, color: 0xFFD700, bounce: 0.0, friction: 2.0 }
     ],
-    checkpoints: [
-      { x: 250, y: 4200, name: "Start" },
-      { x: 200, y: 2700, name: "Narrow Cleared" },
-      { x: 350, y: 1950, name: "Bouncy Cleared" },
-      { x: 180, y: 900, name: "Ice Hell Cleared" },
-      { x: 350, y: -150, name: "Precision Cleared" },
-      { x: 350, y: -1050, name: "Bouncy Castle Cleared" },
-      { x: 200, y: -2100, name: "Chaos Cleared" },
-      { x: 350, y: -3150, name: "Gauntlet Cleared" },
-      { x: 250, y: -3450, name: "SUMMIT REACHED!" }
-    ],
+    
     decorations: [
       { type: 'text', x: 250, y: -3550, text: 'CONGRATULATIONS!', style: { fontSize: '24px', fill: '#FFD700' } },
       { type: 'text', x: 250, y: -3520, text: 'You are the Jump King!', style: { fontSize: '16px', fill: '#FFD700' } }
     ]
   },
-  // Easy to add more maps
+
+  // easy to add more maps
   tutorial: {
     name: "Tutorial",
     worldBounds: { x: 0, y: 0, width: 500, height: 2000 },
@@ -110,17 +101,13 @@ const MAPS = {
       { type: 'platform', x: 350, y: 1700, w: 120, h: 15, color: 0x8B4513, bounce: 0.3, friction: 1.0 },
       { type: 'victory', x: 250, y: 1550, w: 200, h: 20, color: 0xFFD700, bounce: 0.0, friction: 2.0 }
     ],
-    checkpoints: [
-      { x: 250, y: 1850, name: "Start" },
-      { x: 250, y: 1500, name: "Finish!" }
-    ],
     decorations: [
       { type: 'text', x: 250, y: 1500, text: 'Tutorial Complete!', style: { fontSize: '20px', fill: '#FFD700' } }
     ]
   }
 };
 
-// Main game configuration
+// main game configuration
 const config = {
   type: Phaser.AUTO,
   width: 500,
@@ -129,21 +116,20 @@ const config = {
   physics: {
     default: 'arcade',
     arcade: {
-      gravity: { y: 850 },
+      gravity: { y: 800 },
       debug: false
     }
   },
   scene: { preload, create, update }
 };
 
-//Game state
+//game state
 let player, needle, powerMeter, powerLevel = 1, directionVector, canThrow = true;
 let leftEye, rightEye, leftPupil, rightPupil;
 let currentMap = null;
 let loadedSurfaces = [];
-let loadedCheckpoints = [];
 let loadedDecorations = [];
-let currentCheckpoint = 0;
+let currentPointer = { x: 0, y: 0 }; //track current mouse position
 
 const game = new Phaser.Game(config);
 
@@ -157,8 +143,8 @@ function create() {
   setupPlayer(this);
   setupInput(this);
   
-  // Load the default map
-  loadMap(this, 'jumpKing');
+  //laoad the default map
+  loadMap(this, 'fling');
 }
 
 function setupUI(scene) {
@@ -169,7 +155,7 @@ function setupUI(scene) {
   const fixedX = screenWidth / 2;
   const fixedY = screenHeight - 50;
 
-  // Power meter
+  //Power meter
   const gradientCanvas = scene.textures.createCanvas('powerGradient', barWidth, barHeight);
   const ctx = gradientCanvas.getContext();
   const grad = ctx.createLinearGradient(0, 0, barWidth, 0);
@@ -202,8 +188,8 @@ function setupUI(scene) {
     }
   });
 
-  // Add map selection UI
-  scene.add.text(10, 10, 'Maps: 1-Jump King, 2-Tutorial', {
+  //Add map selection UI
+  scene.add.text(10, 10, 'Maps: 1-Fling King, 2-Tutorial', {
     fontSize: '14px',
     fill: '#ffffff',
     fontFamily: 'Arial'
@@ -215,69 +201,120 @@ function setupPlayer(scene) {
   scene.physics.add.existing(player);
   player.body.setCircle(27);
   player.body.setBounce(0.5);
-  player.body.setCollideWorldBounds(false); // Disable world bounds collision to prevent bouncing
+  player.body.setCollideWorldBounds(false); //disable world bounds collision to prevent bouncing
   player.setInteractive();
   scene.cameras.main.startFollow(player, true, 0.1, 0.1);
 
-  // Eyes setup
-  const eyeOffsetX = 5;
+  //eyes setup
+  const eyeOffsetX = 8;
   const eyeOffsetY = -10;
   const pupilRadius = 8;
 
-  leftEye = scene.add.image(player.x + eyeOffsetX, player.y + eyeOffsetY, 'eyeball')
+  leftEye = scene.add.image(player.x - eyeOffsetX, player.y + eyeOffsetY, 'eyeball')
     .setScale(0.085).setDepth(100);
   rightEye = scene.add.image(player.x + eyeOffsetX, player.y + eyeOffsetY, 'eyeball')
     .setScale(0.085).setDepth(100);
   leftPupil = scene.add.circle(leftEye.x, leftEye.y, pupilRadius, 0x000).setDepth(101);
-  rightPupil = scene.add.circle(leftEye.x, leftEye.y, pupilRadius, 0x000).setDepth(101);
+  rightPupil = scene.add.circle(rightEye.x, rightEye.y, pupilRadius, 0x000).setDepth(101);
+  
+  //unitialize direction vector pointing upward
+  directionVector = new Phaser.Math.Vector2(0, -1);
 }
 
 function setupInput(scene) {
   const maxPupilOffset = 6;
-  const eyeOffsetX = 5;
-  const eyeOffsetY = -10;
 
-  // Movement input
+  //track current pointer position for eyes, etc.
   scene.input.on('pointermove', pointer => {
-    if (!canThrow) return;
-    const worldPoint = pointer.positionToCamera(scene.cameras.main);
-    directionVector = new Phaser.Math.Vector2(
-      worldPoint.x - player.x,
-      worldPoint.y - player.y
-    ).normalize();
+      currentPointer.x = pointer.x;
+      currentPointer.y = pointer.y;
 
-    // Eye tracking
-    const pointerScreenX = pointer.x;
-    const pointerScreenY = pointer.y;
-
-    const dxL = Phaser.Math.Clamp(pointerScreenX - scene.cameras.main.worldView.x - (player.x - eyeOffsetX), -maxPupilOffset, maxPupilOffset);
-    const dyL = Phaser.Math.Clamp(pointerScreenY - scene.cameras.main.worldView.y - (player.y + eyeOffsetY), -maxPupilOffset, maxPupilOffset);
-    leftPupil.setPosition(leftEye.x + dxL, leftEye.y + dyL);
-
-    const dxR = Phaser.Math.Clamp(pointerScreenX - scene.cameras.main.worldView.x - (player.x + eyeOffsetX), -maxPupilOffset, maxPupilOffset);
-    const dyR = Phaser.Math.Clamp(pointerScreenY - scene.cameras.main.worldView.y - (player.y + eyeOffsetY), -maxPupilOffset, maxPupilOffset);
-    rightPupil.setPosition(rightEye.x + dxR, rightEye.y + dyR);
+      //update direction vector only on non-touch devices (desktop)
+      if (!scene.sys.game.device.input.touch) {
+          const worldPoint = pointer.positionToCamera(scene.cameras.main);
+          directionVector = new Phaser.Math.Vector2(
+              worldPoint.x - player.x,
+              worldPoint.y - player.y
+          ).normalize();
+      }
   });
 
-  scene.input.on('pointerdown', () => {
-    if (!canThrow) return;
-    canThrow = false;
-    player.body.setVelocity(
-      directionVector.x * 300 * powerLevel,
-      directionVector.y * 800 * powerLevel
-    );
+  // On pointer down (click or tap), trigger jump with direction based on input type
+  scene.input.on('pointerdown', pointer => {
+      if (!canThrow) return;
+      canThrow = false;
+
+      let jumpDirection;
+
+      if (scene.sys.game.device.input.touch) {
+          //on mobile: calculate direction from player to tap location
+          const worldPoint = pointer.positionToCamera(scene.cameras.main);
+          jumpDirection = new Phaser.Math.Vector2(
+              worldPoint.x - player.x,
+              worldPoint.y - player.y
+          ).normalize();
+      } else {
+          //in desktop: use existing direction vector updated by mouse move
+          jumpDirection = directionVector;
+      }
+
+      //Apply jump velocity scaled by power level
+      player.body.setVelocity(
+          jumpDirection.x * 300 * powerLevel,
+          jumpDirection.y * 800 * powerLevel
+      );
   });
 
-  // Keyboard controls
-  scene.input.keyboard.on('keydown-R', () => resetToCheckpoint());
-  scene.input.keyboard.on('keydown-ONE', () => loadMap(scene, 'jumpKing'));
+  //Keyboard controls remain unchanged
+  scene.input.keyboard.on('keydown-ONE', () => loadMap(scene, 'fling'));
   scene.input.keyboard.on('keydown-TWO', () => loadMap(scene, 'tutorial'));
+}
+
+function updateEyePositions(scene) {
+  const eyeOffsetX = 18;
+  const eyeOffsetY = -10;
+  const maxPupilOffset = 6;
+
+  //update eye positions to follow player
+  leftEye.setPosition(player.x - eyeOffsetX, player.y + eyeOffsetY);
+  rightEye.setPosition(player.x + eyeOffsetX, player.y + eyeOffsetY);
+
+  //calculate pupil positions based on current pointer position
+  //convert screen coordinates to world coordinates relative to player
+  const camera = scene.cameras.main;
+  const worldPointerX = currentPointer.x + camera.worldView.x;
+  const worldPointerY = currentPointer.y + camera.worldView.y;
+
+  //calculate direction from each eye to the pointer
+  const leftEyeToPointer = new Phaser.Math.Vector2(
+    worldPointerX - leftEye.x,
+    worldPointerY - leftEye.y
+  ).normalize();
+
+  const rightEyeToPointer = new Phaser.Math.Vector2(
+    worldPointerX - rightEye.x,
+    worldPointerY - rightEye.y
+  ).normalize();
+
+  //apply offset with maximum distance constraint
+  const leftPupilOffset = leftEyeToPointer.scale(maxPupilOffset);
+  const rightPupilOffset = rightEyeToPointer.scale(maxPupilOffset);
+
+  leftPupil.setPosition(
+    leftEye.x + leftPupilOffset.x,
+    leftEye.y + leftPupilOffset.y
+  );
+
+  rightPupil.setPosition(
+    rightEye.x + rightPupilOffset.x,
+    rightEye.y + rightPupilOffset.y
+  );
 }
 
 function loadMap(scene, mapName) {
   console.log(`Loading map: ${mapName}`);
   
-  // Clear existing map
+  //Clear existing map
   clearCurrentMap(scene);
   
   const mapData = MAPS[mapName];
@@ -288,46 +325,39 @@ function loadMap(scene, mapName) {
 
   currentMap = mapData;
   
-  // Set world bounds
+  //set world bounds
   const bounds = mapData.worldBounds;
   scene.physics.world.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
   scene.cameras.main.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
 
-  // Position player at start
+  //position player at start
   player.setPosition(mapData.playerStart.x, mapData.playerStart.y);
   player.body.setVelocity(0, 0);
   canThrow = true;
-  currentCheckpoint = 0;
 
-  // Load background
+  //Reset direction vector
+  directionVector = new Phaser.Math.Vector2(0, -1);
+
+  //Load background
   loadBackground(scene, mapData);
   
-  // Load platforms
+  //load platforms
   loadPlatforms(scene, mapData.platforms);
   
-  // Load checkpoints
-  loadCheckpoints(scene, mapData.checkpoints);
-  
-  // Load decorations
+  //load decorations
   loadDecorations(scene, mapData.decorations);
 
   console.log(`Map '${mapData.name}' loaded successfully!`);
 }
 
 function clearCurrentMap(scene) {
-  // Clear surfaces
+  //clear surfaces
   loadedSurfaces.forEach(surface => {
     if (surface.rect) surface.rect.destroy();
   });
   loadedSurfaces = [];
 
-  // Clear checkpoints
-  loadedCheckpoints.forEach(checkpoint => {
-    if (checkpoint.sprite) checkpoint.sprite.destroy();
-  });
-  loadedCheckpoints = [];
-
-  // Clear decorations
+  //clear decorations
   loadedDecorations.forEach(decoration => {
     if (decoration.object) decoration.object.destroy();
   });
@@ -335,7 +365,7 @@ function clearCurrentMap(scene) {
 }
 
 function loadBackground(scene, mapData) {
-  // Add background based on map height
+  //add background based on map height
   const bounds = mapData.worldBounds;
   const centerY = bounds.y + bounds.height / 2;
   
@@ -364,35 +394,6 @@ function loadPlatforms(scene, platforms) {
   });
 }
 
-function loadCheckpoints(scene, checkpoints) {
-  checkpoints.forEach((checkpointData, index) => {
-    const checkpoint = scene.add.circle(checkpointData.x, checkpointData.y - 50, 15, 0x0066ff);
-    checkpoint.setAlpha(0.7);
-    
-    // Add pulsing animation
-    scene.tweens.add({
-      targets: checkpoint,
-      scaleX: 1.2,
-      scaleY: 1.2,
-      duration: 1000,
-      yoyo: true,
-      repeat: -1,
-      ease: 'Sine.easeInOut'
-    });
-    
-    const area = new Phaser.Geom.Circle(checkpointData.x, checkpointData.y, 50);
-    
-    loadedCheckpoints.push({
-      sprite: checkpoint,
-      area,
-      x: checkpointData.x,
-      y: checkpointData.y,
-      index,
-      name: checkpointData.name
-    });
-  });
-}
-
 function loadDecorations(scene, decorations) {
   if (!decorations) return;
   
@@ -412,50 +413,19 @@ function loadDecorations(scene, decorations) {
 }
 
 function update() {
-  // Player physics
+  //Player physics
   player.body.setVelocity(player.body.velocity.x * 0.98, player.body.velocity.y * 0.98);
 
-  if (player.body.speed < 6) {
+  if (player.body.speed < 7) {
     player.body.setVelocity(0, 0);
     canThrow = true;
   }
 
-  // Update eyes
-  const eyeOffsetX = 18;
-  const eyeOffsetY = -10;
-  leftEye.setPosition(player.x - eyeOffsetX, player.y + eyeOffsetY);
-  rightEye.setPosition(player.x + eyeOffsetX, player.y + eyeOffsetY);
+  //Update eyes to follow player and track mouse
+  updateEyePositions(this);
 
-  // Check checkpoints
-  loadedCheckpoints.forEach((checkpoint, index) => {
-    if (Phaser.Geom.Circle.Contains(checkpoint.area, player.x, player.y) && currentCheckpoint < index) {
-      currentCheckpoint = index;
-      checkpoint.sprite.setTint(0x00ff00);
-      
-      // Flash effect
-      checkpoint.sprite.setAlpha(0.5);
-      setTimeout(() => checkpoint.sprite.setAlpha(1), 200);
-      
-      console.log(`Checkpoint reached: ${checkpoint.name}`);
-    }
-  });
-
-  // More lenient fall protection - only reset if player falls WAY below the ground
+  //More lenient fall protection - only reset if player falls WAY below the ground
   if (currentMap) {
     const groundLevel = currentMap.worldBounds.y + currentMap.worldBounds.height;
-    if (player.y > groundLevel + 200) { // Give 200 pixels buffer below ground
-      console.log(`Player fell too far (y: ${player.y}, ground: ${groundLevel}), resetting...`);
-      resetToCheckpoint();
-    }
-  }
-}
-
-function resetToCheckpoint() {
-  if (currentCheckpoint < loadedCheckpoints.length) {
-    const checkpoint = loadedCheckpoints[currentCheckpoint];
-    player.setPosition(checkpoint.x, checkpoint.y);
-    player.body.setVelocity(0, 0);
-    canThrow = true;
-    console.log(`Reset to checkpoint: ${checkpoint.name}`);
   }
 }
