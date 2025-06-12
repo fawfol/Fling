@@ -576,24 +576,34 @@ function loadDecorations(scene, decorations) {
 }
 
 //loop
-function update() {
   //Player physics
-  player.body.setVelocity(player.body.velocity.x * 0.98, player.body.velocity.y * 0.98);
-
-  //neeedle movement
-  if (!canThrow && needleTween && needleTween.isPlaying()) {
-    needleTween.pause();
-  } else if (canThrow && needleTween && !needleTween.isPlaying()) {
-    needleTween.resume();
-  }
+  function update() {
+    const onGround = player.body.blocked.down || player.body.touching.down;
   
-  if (player.body.speed < 9) {
-    player.body.setVelocity(0, 0);
-    canThrow = true;
-  }
-
-  //Update eyes to follow player and track mouse
-  updateEyePositions(this);
+    // Tweak air control
+    if (!onGround) {
+      player.body.setVelocity(
+        player.body.velocity.x * 0.985,
+        player.body.velocity.y * 0.98
+      );
+    } else {
+      player.body.setVelocity(
+        player.body.velocity.x * 0.8,
+        player.body.velocity.y * 0.98
+      );
+    }
+  
+    // Reset launch ability if player slows down
+    if (player.body.speed < 9) {
+      player.body.setVelocity(0, 0);
+      canThrow = true;
+    }
+  
+    // Needle logic
+    if (!canThrow && needleTween?.isPlaying()) needleTween.pause();
+    if (canThrow && needleTween && !needleTween.isPlaying()) needleTween.resume();
+  
+    updateEyePositions(this);
   
   //Vivtory
   if (!hasWon) {
