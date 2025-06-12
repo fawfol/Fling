@@ -140,7 +140,7 @@ const config = {
   physics: {
     default: 'arcade',
     arcade: {
-      gravity: { y: 800 },
+      gravity: { y: 1000 },
       debug: false
     }
   },
@@ -327,18 +327,20 @@ function setupPlayer(scene) {
   //eyebrows
   //left eyebrow (above left pupil, 11 o'clock arc)
   leftEyebrow = scene.add.graphics().setDepth(5);
-  leftEyebrow.lineStyle(2, 0x000000, 1);
-  leftEyebrow.beginPath();
-  leftEyebrow.arc(0, 0, 6, Phaser.Math.DegToRad(210), Phaser.Math.DegToRad(330)); // 11 o’clock arc
-  leftEyebrow.strokePath();
+leftEyebrow.lineStyle(2, 0x000000, 1);
+leftEyebrow.beginPath();
+leftEyebrow.arc(0, 0, 6, Phaser.Math.DegToRad(300), Phaser.Math.DegToRad(70), true);
+leftEyebrow.strokePath();
+
+
 
   //right eyebrow (above right pupil, 1 o'clock arc)
   rightEyebrow = scene.add.graphics().setDepth(5);
   rightEyebrow.lineStyle(2, 0x000000, 1);
   rightEyebrow.beginPath();
-  rightEyebrow.arc(0, 0, 6, Phaser.Math.DegToRad(210), Phaser.Math.DegToRad(330)); // We'll flip this one later
+  rightEyebrow.arc(0, 0, 6, Phaser.Math.DegToRad(20), Phaser.Math.DegToRad(200), true); // ⮕ CLOCKWISE
   rightEyebrow.strokePath();
-  rightEyebrow.setScale(-1, 1); // mirror horizontally
+  
 
     
 
@@ -438,6 +440,15 @@ function updateEyePositions(scene) {
     rightEye.x + rightPupilOffset.x,
     rightEye.y + rightPupilOffset.y
   );
+
+  //eyebrow position
+  if (leftEyebrow) {
+    leftEyebrow.setPosition(leftPupil.x, leftPupil.y - 6); // Slightly above
+  }
+  if (rightEyebrow) {
+    rightEyebrow.setPosition(rightPupil.x, rightPupil.y - 6);
+  }
+  
 }
 
 function loadMap(scene, mapName) {
@@ -570,7 +581,6 @@ function update() {
     needleTween.resume();
   }
   
-
   if (player.body.speed < 9) {
     player.body.setVelocity(0, 0);
     canThrow = true;
