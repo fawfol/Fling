@@ -131,6 +131,8 @@ let loadedSurfaces = [];
 let loadedDecorations = [];
 let currentPointer = { x: 0, y: 0 }; //track current mouse position
 
+let hasWon = false;
+
 const game = new Phaser.Game(config);
 
 function preload() {
@@ -242,7 +244,7 @@ function setupInput(scene) {
   // On pointer down (click or tap), trigger jump with direction based on input type
   scene.input.on('pointerdown', pointer => {
       if (!canThrow) return;
-      canThrow = false;
+      canThrow = true;
 
       let jumpDirection;
 
@@ -385,6 +387,11 @@ function loadPlatforms(scene, platforms) {
     scene.physics.add.existing(rect, true);
     scene.physics.add.collider(player, rect);
     
+
+  if (platform.type === 'victory') {
+    rect.isVictory = true;
+  }
+
     loadedSurfaces.push({
       rect,
       bounce: platform.bounce,
@@ -423,9 +430,99 @@ function update() {
 
   //Update eyes to follow player and track mouse
   updateEyePositions(this);
+  
+  //Vivtory
+  if (!hasWon) {
+    // Touching victory platform
+    loadedSurfaces.forEach(surface => {
+      if (surface.rect.isVictory) {
+        if (Phaser.Geom.Intersects.RectangleToRectangle(player.getBounds(), surface.rect.getBounds())) {
+          hasWon = true;
+          handleVictory();
+        }
+      }
+    });
+  
+    // Or going above the map top
+    if (currentMap && player.y < currentMap.worldBounds.y) {
+      hasWon = true;
+      handleVictory();
+    }
+  }
+  
 
   //More lenient fall protection - only reset if player falls WAY below the ground
   if (currentMap) {
     const groundLevel = currentMap.worldBounds.y + currentMap.worldBounds.height;
   }
 }
+
+//victory popup
+function handleVictory() {
+  console.log("🎉 Victory!");
+  canThrow = false;
+  scene.input.enabled = false;
+  player.body.setVelocity(0, 0);
+  player.body.moves = false;
+
+  const scene = player.scene;
+
+  //freeze player
+  player.body.setVelocity(0, 0);
+  player.body.moves = false;
+
+  //fade effect
+  scene.cameras.main.fade(800, 255, 215, 0); // yellow/gold fade
+
+  //after fade completes, show text and buttons
+  scene.time.delayedCall(900, () => {
+    const centerX = scene.scale.width / 2;
+    const centerY = scene.scale.height / 2;
+
+    // BIG TEXT
+    scene.add.text(centerX, centerY - 60,
+      '🎉 BIG CONGRATULATIONS! 🎉\nYou won this map!',
+      { 
+        fontSize: '24px',
+        fill: '#FFD700',
+        fontFamily: 'Arial',
+        align: 'center',
+        fontStyle: 'bold',
+        stroke: '#000',
+        strokeThickness: 4
+      }
+    ).setOrigin(0.5)
+     .setScrollFactor(0)
+     .setDepth(999);
+
+    //BUTTON 1: Next Map
+    scene.add.text(centerX, centerY + 10, '[ Next Map ]', {
+      fontSize: '20px',
+      fill: '#ffffff',
+      fontFamily: 'Arial',
+      stroke: '#000',
+      strokeThickness: 3
+    })
+    .setOrigin(0.5)
+    .setInteractive({ useHandCursor: true })
+    .setScrollFactor(0)
+    .setDepth(999)
+    .on('pointerdown', () => {
+      loadMap(scene, 'tutorial'); //next map later
+    });
+
+    //BUTTON 2: Restart
+    scene.add.text(centerX, centerY + 50, '[ Restart ]', {
+      fontSize: '20px',
+      fill: '#ffffff',
+      fontFamily: 'Arial',
+      stroke: '#000',
+      strokeThickness: 3
+    })
+    .setOrigin(0.5)
+    .setInteractive({ useHandCursor: true })
+    .setScrollFactor(0)
+    .setDepth(999);
+  });
+}
+
