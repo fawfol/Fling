@@ -161,6 +161,8 @@ let currentPointer = { x: 0, y: 0 }; //track current mouse position
 
 let hasWon = false;
 let victoryUI = [];
+let powerLabel;
+
 
 
 const game = new Phaser.Game(config);
@@ -200,11 +202,14 @@ function setupUI(scene) {
   powerMeter = scene.add.image(fixedX, fixedY, 'powerGradient')
     .setOrigin(0.5, 0.2).setScrollFactor(0).setDepth(98);
 
-  scene.add.text(fixedX, fixedY + 30, 'POWER', {
-    fontSize: '20px',
-    fill: '#ffffff',
-    fontFamily: 'Arial'
-  }).setOrigin(0.5).setScrollFactor(0).setDepth(100);
+  //powertext
+  powerLabel = scene.add.text(fixedX, fixedY + 30,
+    currentLanguage === 'en' ? 'POWER' : 'パワー', {
+      fontSize: '20px',
+      fill: '#ffffff',
+      fontFamily: 'Arial'
+  }).setOrigin(0.5).setScrollFactor(0).setDepth(100);  
+  
 
   needle = scene.add.rectangle(fixedX - barWidth / 2, fixedY, 6, 20, 0x000000)
     .setOrigin(0.5, 0.2).setScrollFactor(0).setDepth(99);
@@ -229,22 +234,29 @@ function setupUI(scene) {
     strokeThickness: 3
   };
   
-  const flingBtn = scene.add.text(20, scene.scale.height - 30, '[ Fling Tower ]', buttonStyle)
+  //fling tower button bottom left
+  //tutorial button bottom right
+  const flingLabel = currentLanguage === 'en' ? '[ Fling Tower ]' : '[ フリング・タワー ]';
+  const tutorialLabel = currentLanguage === 'en' ? '[ Tutorial ]' : '[ チュートリアル ]';
+
+  flingBtn = scene.add.text(20, scene.scale.height - 30, flingLabel, buttonStyle)
     .setScrollFactor(0)
     .setDepth(100)
     .setInteractive({ useHandCursor: true })
     .on('pointerdown', () => {
+    if (hasWon) return;
       loadMap(scene, 'fling');
-    });
-  
-  const tutorialBtn = scene.add.text(scene.scale.width - 20, scene.scale.height - 30, '[ Tutorial ]', buttonStyle)
+  });
+
+  tutorialBtn = scene.add.text(scene.scale.width - 20, scene.scale.height - 30, tutorialLabel, buttonStyle)
     .setOrigin(1, 0)
     .setScrollFactor(0)
     .setDepth(100)
     .setInteractive({ useHandCursor: true })
     .on('pointerdown', () => {
+    if (hasWon) return;
       loadMap(scene, 'tutorial');
-    });
+  });
   
   //language
   const langBtn = scene.add.text(scene.scale.width - 20, 20, '[日本語]', {
@@ -259,20 +271,32 @@ function setupUI(scene) {
   .setDepth(100)
   .setInteractive({ useHandCursor: true })
   .on('pointerdown', () => {
-    // Toggle language
-    currentLanguage = (currentLanguage === 'en') ? 'jp' : 'en';
+  if(hasWon) return;
+  currentLanguage = (currentLanguage === 'en') ? 'jp' : 'en';
+  langBtn.setText(currentLanguage === 'en' ? '[日本語]' : '[ENG]');
+
+  //fling tower and tutoril button bottom change lang
+  if (flingBtn) {
+    flingBtn.setText(currentLanguage === 'en' ? '[ Fling Tower ]' : '[ フリング・タワー ]');
+  }
+  if (tutorialBtn) {
+    tutorialBtn.setText(currentLanguage === 'en' ? '[ Tutorial ]' : '[ チュートリアル ]');
+  }
   
-    // Optional: Show feedback
-    langBtn.setText(currentLanguage === 'en' ? '[日本語] ' : '[ENG]');
   
-    // Refresh decorations or tutorial text if needed
-    if (currentMap.name === 'Tutorial') {
+    // Update POWER label
+    if (powerLabel) {
+      powerLabel.setText(currentLanguage === 'en' ? 'POWER' : 'パワー');
+    }
+  
+    // Reload map to update decorations
+    if (currentMap === MAPS.tutorial) {
       loadMap(scene, 'tutorial');
+    } else if (currentMap === MAPS.fling) {
+      loadMap(scene, 'fling');
     }
   });
   
-
-
 }
 
 function setupPlayer(scene) {
@@ -580,7 +604,11 @@ function handleVictory() {
       const centerX = scene.scale.width / 2;
       const centerY = scene.scale.height / 2;
 
-      const title = scene.add.text(centerX, centerY - 60, '🎉 BIG CONGRATULATIONS! 🎉\nYou won this map!', {
+      const victoryText = currentLanguage === 'en'
+        ? '🎉 BIG CONGRATULATIONS! 🎉\nYou won this map!'
+        : '🎉 おめでとうございます！ 🎉\nこのマップをクリアしました！';
+        const title = scene.add.text(centerX, centerY - 60, victoryText, {
+
         fontSize: '24px',
         fill: '#ffffff',
         fontFamily: 'Arial',
@@ -590,7 +618,9 @@ function handleVictory() {
       }).setOrigin(0.5).setScrollFactor(0).setDepth(1001);
       victoryUI.push(title);
 
-      const nextBtn = scene.add.text(centerX, centerY + 10, '[ Next Map ]', {
+      const nextLabel = currentLanguage === 'en' ? '[ Next Map ]' : '[ 次のマップ ]';
+      const nextBtn = scene.add.text(centerX, centerY + 10, nextLabel, {
+      
         fontSize: '20px',
         fill: '#ffffff',
         fontFamily: 'Arial',
@@ -603,7 +633,9 @@ function handleVictory() {
         });
       victoryUI.push(nextBtn);
 
-      const restartBtn = scene.add.text(centerX, centerY + 50, '[ Restart ]', {
+      const restartLabel = currentLanguage === 'en' ? '[ Restart ]' : '[ リスタート ]';
+      const restartBtn = scene.add.text(centerX, centerY + 50, restartLabel, {
+
         fontSize: '20px',
         fill: '#ffffff',
         fontFamily: 'Arial',
