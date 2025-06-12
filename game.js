@@ -102,7 +102,9 @@ const MAPS = {
       { type: 'victory', x: 250, y: 1550, w: 200, h: 20, color: 0xFFD700, bounce: 0.0, friction: 2.0 }
     ],
     decorations: [
-      { type: 'text', x: 250, y: 1500, text: 'Tutorial Complete!', style: { fontSize: '20px', fill: '#FFD700' } }
+      { type: 'text', x: 250, y: 1250, text: 'Tutorial', style: { fontSize: '30px', fill: '#FFD700' } },
+      { type: 'text', x: 250, y: 1330, text: '\n 1.Use mouse click to jump\nand point in the directon\n\n2.In mobile\nYou tap where you want to jump', style: { fontSize: '20px', fill: '#ffffff' } },
+      { type: 'text', x: 230, y: 1450, text: '\nAnd you jump and jump\nUntil you reach the summit\n Its quiet far so GOOD LUCK', style: { fontSize: '20px', fill: '#ffffff' } }
     ]
   }
 };
@@ -132,6 +134,8 @@ let loadedDecorations = [];
 let currentPointer = { x: 0, y: 0 }; //track current mouse position
 
 let hasWon = false;
+let victoryUI = [];
+
 
 const game = new Phaser.Game(config);
 
@@ -146,7 +150,7 @@ function create() {
   setupInput(this);
   
   //laoad the default map
-  loadMap(this, 'fling');
+  loadMap(this, 'tutorial');
 }
 
 function setupUI(scene) {
@@ -191,11 +195,31 @@ function setupUI(scene) {
   });
 
   //Add map selection UI
-  scene.add.text(10, 10, 'Maps: 1-Fling King, 2-Tutorial', {
-    fontSize: '14px',
+  const buttonStyle = {
+    fontSize: '18px',
     fill: '#ffffff',
-    fontFamily: 'Arial'
-  }).setScrollFactor(0).setDepth(100);
+    fontFamily: 'Arial',
+    stroke: '#000',
+    strokeThickness: 3
+  };
+  
+  const flingBtn = scene.add.text(20, scene.scale.height - 30, '[ Fling Tower ]', buttonStyle)
+    .setScrollFactor(0)
+    .setDepth(100)
+    .setInteractive({ useHandCursor: true })
+    .on('pointerdown', () => {
+      loadMap(scene, 'fling');
+    });
+  
+  const tutorialBtn = scene.add.text(scene.scale.width - 20, scene.scale.height - 30, '[ Tutorial ]', buttonStyle)
+    .setOrigin(1, 0)
+    .setScrollFactor(0)
+    .setDepth(100)
+    .setInteractive({ useHandCursor: true })
+    .on('pointerdown', () => {
+      loadMap(scene, 'tutorial');
+    });
+
 }
 
 function setupPlayer(scene) {
@@ -314,17 +338,26 @@ function updateEyePositions(scene) {
 }
 
 function loadMap(scene, mapName) {
-  console.log(`Loading map: ${mapName}`);
-  
-  //Clear existing map
-  clearCurrentMap(scene);
-  
-  const mapData = MAPS[mapName];
-  if (!mapData) {
-    console.error(`Map '${mapName}' not found!`);
-    return;
-  }
 
+    console.log(`Loading map: ${mapName}`);
+  
+    victoryUI.forEach(obj => obj.destroy());
+    victoryUI = [];
+    scene.input.enabled = true;
+
+
+  
+    clearCurrentMap(scene);
+
+    canThrow = true;
+    player.body.moves = true;
+
+  
+    const mapData = MAPS[mapName];
+    if (!mapData) {
+      console.error(`Map '${mapName}' not found!`);
+      return;
+    }
   currentMap = mapData;
   
   //set world bounds
@@ -464,19 +497,19 @@ function handleVictory() {
   hasWon = true;
   canThrow = false;
 
-  //freeze player
-  scene.input.enabled = false;
+  // Freeze player but NOT input
   player.body.setVelocity(0, 0);
   player.body.moves = false;
 
-  //create a full-screen yellow rectangle
+  // create a full-screen yellow rectangle
   const overlay = scene.add.rectangle(0, 0, scene.scale.width, scene.scale.height, 0xFFD700)
     .setOrigin(0, 0)
     .setAlpha(0)
     .setScrollFactor(0)
     .setDepth(1000);
+  victoryUI.push(overlay);
 
-  //fade it in
+  // fade it in
   scene.tweens.add({
     targets: overlay,
     alpha: 0.9,
@@ -486,51 +519,41 @@ function handleVictory() {
       const centerX = scene.scale.width / 2;
       const centerY = scene.scale.height / 2;
 
-      //victory Text
-      scene.add.text(centerX, centerY - 60, '🎉 BIG CONGRATULATIONS! 🎉\nYou won this map!', {
+      const title = scene.add.text(centerX, centerY - 60, '🎉 BIG CONGRATULATIONS! 🎉\nYou won this map!', {
         fontSize: '24px',
         fill: '#ffffff',
         fontFamily: 'Arial',
         align: 'center',
         stroke: '#000',
         strokeThickness: 4
-      }).setOrigin(0.5)
-        .setScrollFactor(0)
-        .setDepth(1001);
+      }).setOrigin(0.5).setScrollFactor(0).setDepth(1001);
+      victoryUI.push(title);
 
-      //button: Next Map
       const nextBtn = scene.add.text(centerX, centerY + 10, '[ Next Map ]', {
         fontSize: '20px',
         fill: '#ffffff',
         fontFamily: 'Arial',
         stroke: '#000',
         strokeThickness: 2
-      }).setOrigin(0.5)
-        .setInteractive({ useHandCursor: true })
-        .setScrollFactor(0)
-        .setDepth(1001)
+      }).setOrigin(0.5).setInteractive({ useHandCursor: true }).setScrollFactor(0).setDepth(1001)
         .on('pointerdown', () => {
-          scene.input.enabled = true;
           hasWon = false;
-          loadMap(scene, 'tutorial'); // later actual next map
+          loadMap(scene, currentMap.name === 'Tutorial' ? 'fling' : 'tutorial');
         });
+      victoryUI.push(nextBtn);
 
-      //button: Restart
       const restartBtn = scene.add.text(centerX, centerY + 50, '[ Restart ]', {
         fontSize: '20px',
         fill: '#ffffff',
         fontFamily: 'Arial',
         stroke: '#000',
         strokeThickness: 2
-      }).setOrigin(0.5)
-        .setInteractive({ useHandCursor: true })
-        .setScrollFactor(0)
-        .setDepth(1001)
+      }).setOrigin(0.5).setInteractive({ useHandCursor: true }).setScrollFactor(0).setDepth(1001)
         .on('pointerdown', () => {
-          scene.input.enabled = true;
           hasWon = false;
           loadMap(scene, currentMap.name === 'Fling Tower' ? 'fling' : 'tutorial');
         });
+      victoryUI.push(restartBtn);
     }
   });
 }
