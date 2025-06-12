@@ -244,7 +244,7 @@ function setupInput(scene) {
   // On pointer down (click or tap), trigger jump with direction based on input type
   scene.input.on('pointerdown', pointer => {
       if (!canThrow) return;
-      canThrow = true;
+      canThrow = false;
 
       let jumpDirection;
 
@@ -433,7 +433,7 @@ function update() {
   
   //Vivtory
   if (!hasWon) {
-    // Touching victory platform
+    //touching victory platform
     loadedSurfaces.forEach(surface => {
       if (surface.rect.isVictory) {
         if (Phaser.Geom.Intersects.RectangleToRectangle(player.getBounds(), surface.rect.getBounds())) {
@@ -443,7 +443,7 @@ function update() {
       }
     });
   
-    // Or going above the map top
+    //or going above the map top
     if (currentMap && player.y < currentMap.worldBounds.y) {
       hasWon = true;
       handleVictory();
@@ -451,7 +451,7 @@ function update() {
   }
   
 
-  //More lenient fall protection - only reset if player falls WAY below the ground
+  //more lenient fall protection - only reset if player falls WAY below the ground
   if (currentMap) {
     const groundLevel = currentMap.worldBounds.y + currentMap.worldBounds.height;
   }
@@ -460,69 +460,79 @@ function update() {
 //victory popup
 function handleVictory() {
   console.log("🎉 Victory!");
+  const scene = player.scene;
+  hasWon = true;
   canThrow = false;
+
+  //freeze player
   scene.input.enabled = false;
   player.body.setVelocity(0, 0);
   player.body.moves = false;
 
-  const scene = player.scene;
+  //create a full-screen yellow rectangle
+  const overlay = scene.add.rectangle(0, 0, scene.scale.width, scene.scale.height, 0xFFD700)
+    .setOrigin(0, 0)
+    .setAlpha(0)
+    .setScrollFactor(0)
+    .setDepth(1000);
 
-  //freeze player
-  player.body.setVelocity(0, 0);
-  player.body.moves = false;
+  //fade it in
+  scene.tweens.add({
+    targets: overlay,
+    alpha: 0.9,
+    duration: 800,
+    ease: 'Linear',
+    onComplete: () => {
+      const centerX = scene.scale.width / 2;
+      const centerY = scene.scale.height / 2;
 
-  //fade effect
-  scene.cameras.main.fade(800, 255, 215, 0); // yellow/gold fade
-
-  //after fade completes, show text and buttons
-  scene.time.delayedCall(900, () => {
-    const centerX = scene.scale.width / 2;
-    const centerY = scene.scale.height / 2;
-
-    // BIG TEXT
-    scene.add.text(centerX, centerY - 60,
-      '🎉 BIG CONGRATULATIONS! 🎉\nYou won this map!',
-      { 
+      //victory Text
+      scene.add.text(centerX, centerY - 60, '🎉 BIG CONGRATULATIONS! 🎉\nYou won this map!', {
         fontSize: '24px',
-        fill: '#FFD700',
+        fill: '#ffffff',
         fontFamily: 'Arial',
         align: 'center',
-        fontStyle: 'bold',
         stroke: '#000',
         strokeThickness: 4
-      }
-    ).setOrigin(0.5)
-     .setScrollFactor(0)
-     .setDepth(999);
+      }).setOrigin(0.5)
+        .setScrollFactor(0)
+        .setDepth(1001);
 
-    //BUTTON 1: Next Map
-    scene.add.text(centerX, centerY + 10, '[ Next Map ]', {
-      fontSize: '20px',
-      fill: '#ffffff',
-      fontFamily: 'Arial',
-      stroke: '#000',
-      strokeThickness: 3
-    })
-    .setOrigin(0.5)
-    .setInteractive({ useHandCursor: true })
-    .setScrollFactor(0)
-    .setDepth(999)
-    .on('pointerdown', () => {
-      loadMap(scene, 'tutorial'); //next map later
-    });
+      //button: Next Map
+      const nextBtn = scene.add.text(centerX, centerY + 10, '[ Next Map ]', {
+        fontSize: '20px',
+        fill: '#ffffff',
+        fontFamily: 'Arial',
+        stroke: '#000',
+        strokeThickness: 2
+      }).setOrigin(0.5)
+        .setInteractive({ useHandCursor: true })
+        .setScrollFactor(0)
+        .setDepth(1001)
+        .on('pointerdown', () => {
+          scene.input.enabled = true;
+          hasWon = false;
+          loadMap(scene, 'tutorial'); // later actual next map
+        });
 
-    //BUTTON 2: Restart
-    scene.add.text(centerX, centerY + 50, '[ Restart ]', {
-      fontSize: '20px',
-      fill: '#ffffff',
-      fontFamily: 'Arial',
-      stroke: '#000',
-      strokeThickness: 3
-    })
-    .setOrigin(0.5)
-    .setInteractive({ useHandCursor: true })
-    .setScrollFactor(0)
-    .setDepth(999);
+      //button: Restart
+      const restartBtn = scene.add.text(centerX, centerY + 50, '[ Restart ]', {
+        fontSize: '20px',
+        fill: '#ffffff',
+        fontFamily: 'Arial',
+        stroke: '#000',
+        strokeThickness: 2
+      }).setOrigin(0.5)
+        .setInteractive({ useHandCursor: true })
+        .setScrollFactor(0)
+        .setDepth(1001)
+        .on('pointerdown', () => {
+          scene.input.enabled = true;
+          hasWon = false;
+          loadMap(scene, currentMap.name === 'Fling Tower' ? 'fling' : 'tutorial');
+        });
+    }
   });
 }
+
 
