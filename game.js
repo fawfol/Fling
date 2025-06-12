@@ -163,6 +163,9 @@ let hasWon = false;
 let victoryUI = [];
 let powerLabel;
 
+let needleTween;
+
+let leftEyebrow, rightEyebrow;
 
 
 const game = new Phaser.Game(config);
@@ -214,7 +217,7 @@ function setupUI(scene) {
   needle = scene.add.rectangle(fixedX - barWidth / 2, fixedY, 6, 20, 0x000000)
     .setOrigin(0.5, 0.2).setScrollFactor(0).setDepth(99);
 
-  scene.tweens.add({
+  needleTween = scene.tweens.add({
     targets: needle,
     x: { from: fixedX - barWidth / 2, to: fixedX + barWidth / 2 },
     duration: 500,
@@ -224,6 +227,7 @@ function setupUI(scene) {
       powerLevel = Phaser.Math.Linear(0.3, 2, (target.x - (fixedX - barWidth / 2)) / barWidth);
     }
   });
+    
 
   //Add map selection UI
   const buttonStyle = {
@@ -320,6 +324,24 @@ function setupPlayer(scene) {
   leftPupil = scene.add.circle(leftEye.x, leftEye.y, pupilRadius, 0x000).setDepth(101);
   rightPupil = scene.add.circle(rightEye.x, rightEye.y, pupilRadius, 0x000).setDepth(101);
   
+  //eyebrows
+  //left eyebrow (above left pupil, 11 o'clock arc)
+  leftEyebrow = scene.add.graphics().setDepth(5);
+  leftEyebrow.lineStyle(2, 0x000000, 1);
+  leftEyebrow.beginPath();
+  leftEyebrow.arc(0, 0, 6, Phaser.Math.DegToRad(210), Phaser.Math.DegToRad(330)); // 11 o’clock arc
+  leftEyebrow.strokePath();
+
+  //right eyebrow (above right pupil, 1 o'clock arc)
+  rightEyebrow = scene.add.graphics().setDepth(5);
+  rightEyebrow.lineStyle(2, 0x000000, 1);
+  rightEyebrow.beginPath();
+  rightEyebrow.arc(0, 0, 6, Phaser.Math.DegToRad(210), Phaser.Math.DegToRad(330)); // We'll flip this one later
+  rightEyebrow.strokePath();
+  rightEyebrow.setScale(-1, 1); // mirror horizontally
+
+    
+
   //unitialize direction vector pointing upward
   directionVector = new Phaser.Math.Vector2(0, -1);
 }
@@ -540,6 +562,14 @@ function loadDecorations(scene, decorations) {
 function update() {
   //Player physics
   player.body.setVelocity(player.body.velocity.x * 0.98, player.body.velocity.y * 0.98);
+
+  //neeedle movement
+  if (!canThrow && needleTween && needleTween.isPlaying()) {
+    needleTween.pause();
+  } else if (canThrow && needleTween && !needleTween.isPlaying()) {
+    needleTween.resume();
+  }
+  
 
   if (player.body.speed < 9) {
     player.body.setVelocity(0, 0);
