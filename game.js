@@ -94,7 +94,7 @@ const MAPS = {
   tutorial: {
     name: "Tutorial",
     worldBounds: { x: 0, y: 0, width: 500, height: 2000 },
-    playerStart: { x: 250, y: 1900 },
+    playerStart: { x: 250, y: 1950 },
     platforms: [
       { type: 'ground', x: 250, y: 2000, w: 500, h: 40, color: 0x654321, bounce: 0.4, friction: 2.5 },
       { type: 'platform', x: 150, y: 1850, w: 120, h: 15, color: 0x8B4513, bounce: 0.3, friction: 1.0 },
@@ -102,9 +102,31 @@ const MAPS = {
       { type: 'victory', x: 250, y: 1550, w: 200, h: 20, color: 0xFFD700, bounce: 0.0, friction: 2.0 }
     ],
     decorations: [
-      { type: 'text', x: 250, y: 1250, text: 'Tutorial', style: { fontSize: '30px', fill: '#FFD700' } },
-      { type: 'text', x: 250, y: 1330, text: '\n 1.Use mouse click to jump\nand point in the directon\n\n2.In mobile\nYou tap where you want to jump', style: { fontSize: '20px', fill: '#ffffff' } },
-      { type: 'text', x: 230, y: 1450, text: '\nAnd you jump and jump\nUntil you reach the summit\n Its quiet far so GOOD LUCK', style: { fontSize: '20px', fill: '#ffffff' } }
+      {
+        type: 'text',
+        x: 245,
+        y: 1150,
+        text: () => currentLanguage === 'en' ? 'Tutorial' : 'チュートリアル',
+        style: { fontSize: '30px', fill: '#FFD700' }
+      },
+      {
+        type: 'text',
+        x: 245,
+        y: 1220,
+        text: () => currentLanguage === 'en'
+          ? '\n1. Use mouse click to jump\nand point in the direction\n\n2. On mobile\nTap where you want to jump'
+          : '\n1. クリックでジャンプ\n方向を指定して\n\n2. モバイルでは\nタップしてジャンプします',
+        style: { fontSize: '20px', fill: '#ffffff' }
+      },
+      {
+        type: 'text',
+        x: 250,
+        y: 1380,
+        text: () => currentLanguage === 'en'
+          ? '\n\n3. And you jump and jump\nUntil you reach the summit\n\n4.It’s quite far,GOOD LUCK!\n\n5.Try the buttons below to\nswitch maps'
+          : '\n\n3. ジャンプし続けて\n山頂を目指しましょう\n\n4.かなり遠いので頑張って！\n\n5.下のボタンでマップを\n切り替えられます',
+        style: { fontSize: '20px', fill: '#ffffff' }
+      }
     ]
   }
 };
@@ -124,6 +146,10 @@ const config = {
   },
   scene: { preload, create, update }
 };
+
+//langugae
+let currentLanguage = 'en'; //default: English
+
 
 //game state
 let player, needle, powerMeter, powerLevel = 1, directionVector, canThrow = true;
@@ -219,6 +245,33 @@ function setupUI(scene) {
     .on('pointerdown', () => {
       loadMap(scene, 'tutorial');
     });
+  
+  //language
+  const langBtn = scene.add.text(scene.scale.width - 20, 20, '[日本語]', {
+    fontSize: '18px',
+    fill: '#ffffff',
+    fontFamily: 'Arial',
+    stroke: '#000',
+    strokeThickness: 3
+  })
+  .setOrigin(1, 0)
+  .setScrollFactor(0)
+  .setDepth(100)
+  .setInteractive({ useHandCursor: true })
+  .on('pointerdown', () => {
+    // Toggle language
+    currentLanguage = (currentLanguage === 'en') ? 'jp' : 'en';
+  
+    // Optional: Show feedback
+    langBtn.setText(currentLanguage === 'en' ? '[日本語] ' : '[ENG]');
+  
+    // Refresh decorations or tutorial text if needed
+    if (currentMap.name === 'Tutorial') {
+      loadMap(scene, 'tutorial');
+    }
+  });
+  
+
 
 }
 
@@ -267,29 +320,33 @@ function setupInput(scene) {
 
   // On pointer down (click or tap), trigger jump with direction based on input type
   scene.input.on('pointerdown', pointer => {
-      if (!canThrow) return;
-      canThrow = false;
+    const tapY = pointer.y;
 
-      let jumpDirection;
-
-      if (scene.sys.game.device.input.touch) {
-          //on mobile: calculate direction from player to tap location
-          const worldPoint = pointer.positionToCamera(scene.cameras.main);
-          jumpDirection = new Phaser.Math.Vector2(
-              worldPoint.x - player.x,
-              worldPoint.y - player.y
-          ).normalize();
-      } else {
-          //in desktop: use existing direction vector updated by mouse move
-          jumpDirection = directionVector;
-      }
-
-      //Apply jump velocity scaled by power level
-      player.body.setVelocity(
-          jumpDirection.x * 300 * powerLevel,
-          jumpDirection.y * 800 * powerLevel
-      );
+    if (tapY < 70 || tapY > scene.scale.height - 100) {
+      return;
+    }
+  
+    if (!canThrow) return;
+    canThrow = false;
+  
+    let jumpDirection;
+  
+    if (scene.sys.game.device.input.touch) {
+      const worldPoint = pointer.positionToCamera(scene.cameras.main);
+      jumpDirection = new Phaser.Math.Vector2(
+        worldPoint.x - player.x,
+        worldPoint.y - player.y
+      ).normalize();
+    } else {
+      jumpDirection = directionVector;
+    }
+  
+    player.body.setVelocity(
+      jumpDirection.x * 300 * powerLevel,
+      jumpDirection.y * 800 * powerLevel
+    );
   });
+  
 
   //Keyboard controls remain unchanged
   scene.input.keyboard.on('keydown-ONE', () => loadMap(scene, 'fling'));
@@ -434,29 +491,33 @@ function loadPlatforms(scene, platforms) {
   });
 }
 
+
+//mostly the text
 function loadDecorations(scene, decorations) {
   if (!decorations) return;
   
   decorations.forEach(decoration => {
     let obj;
-    
+
     if (decoration.type === 'text') {
-      obj = scene.add.text(decoration.x, decoration.y, decoration.text, decoration.style)
+      const textValue = typeof decoration.text === 'function' ? decoration.text() : decoration.text;
+      obj = scene.add.text(decoration.x, decoration.y, textValue, decoration.style)
         .setOrigin(0.5)
         .setDepth(100);
     }
-    
+
     if (obj) {
       loadedDecorations.push({ object: obj, type: decoration.type });
     }
   });
 }
 
+
 function update() {
   //Player physics
   player.body.setVelocity(player.body.velocity.x * 0.98, player.body.velocity.y * 0.98);
 
-  if (player.body.speed < 7) {
+  if (player.body.speed < 9) {
     player.body.setVelocity(0, 0);
     canThrow = true;
   }
