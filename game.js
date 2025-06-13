@@ -1,4 +1,5 @@
 //map definitions - separated from game logic
+const MapOrder = ['tutorial', 'easy', 'medium', 'hard', 'extreme', 'fling'];
 const MAPS = {
   // LEVEL 1: EASY - Simple platforms, no special mechanics
   easy: {
@@ -20,16 +21,13 @@ const MAPS = {
       
       { type: 'platform', x: 120, y: 600, w: 140, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
       { type: 'platform', x: 380, y: 450, w: 140, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
-      { type: 'platform', x: 200, y: 300, w: 160, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
-      { type: 'platform', x: 360, y: 150, w: 160, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
-      { type: 'platform', x: 180, y: 0, w: 140, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
       
       //victory
-      { type: 'victory', x: 250, y: -320, w: 500, h: 25, color: 0xFFD700, bounce: 0.0, friction: 3.0 }
+      { type: 'victory', x: 250, y: 280, w: 500, h: 25, color: 0xFFD700, bounce: 0.0, friction: 3.0 }
     ],
     decorations: [
-      { type: 'text', x: 250, y: -390, text: 'EASY COMPLETE!', style: { fontSize: '24px', fill: '#FFD700' } },
-      { type: 'text', x: 250, y: -360, text: 'Nice job! Try Medium next!', style: { fontSize: '16px', fill: '#FFD700' } }
+      { type: 'text', x: 250, y: 180, text: 'EASY COMPLETE!', style: { fontSize: '24px', fill: '#FFD700' } },
+      { type: 'text', x: 250, y: 150, text: 'Nice job! Try Medium next!', style: { fontSize: '16px', fill: '#FFD700' } }
     ]
   },
 
@@ -990,7 +988,7 @@ function handleVictory() {
 
       const menuLabel = currentLanguage === 'en' ? '[ MENU ]' : '[ メニュー ]';
       const menuBtn = scene.add.text(centerX, centerY + 10, menuLabel, {
-        fontSize: '20px',
+        fontSize: '24px',
         fill: '#ffffff',
         fontFamily: 'Arial',
         stroke: '#000',
@@ -1002,7 +1000,7 @@ function handleVictory() {
       });
       victoryUI.push(menuBtn);
 
-      const restartLabel = currentLanguage === 'en' ? '[ Restart ]' : '[ リスタート ]';
+      const restartLabel = currentLanguage === 'en' ? '[RESTART]' : '[ リスタート ]';
       const restartBtn = scene.add.text(centerX, centerY + 50, restartLabel, {
 
         fontSize: '24px',
@@ -1016,6 +1014,23 @@ function handleVictory() {
           loadMap(scene, currentMapKey);
         });
       victoryUI.push(restartBtn);
+      
+      const nextLabel = currentLanguage === 'en' ? '[ Next Map ]' : '[ 次のマップ ]';
+    const nextBtn = scene.add.text(centerX, centerY + 90, nextLabel, {
+      fontSize: '24px',
+      fill: '#ffffff',
+      fontFamily: 'Arial',
+      stroke: '#000',
+      strokeThickness: 2
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true }).setScrollFactor(0).setDepth(1000)
+      .on('pointerdown', () => {
+        const idx = MapOrder.indexOf(currentMapKey);
+        if (idx !== -1 && idx < MapOrder.length - 1) {
+          hasWon = false;
+          loadMap(scene, MapOrder[idx + 1]);
+        }
+      });
+      victoryUI.push(nextBtn);
     }
   });
 }
