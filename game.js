@@ -1,5 +1,221 @@
-//nap definitions - separated from game logic
+//map definitions - separated from game logic
 const MAPS = {
+  // LEVEL 1: EASY - Simple platforms, no special mechanics
+  easy: {
+    name: "Easy Climb",
+    worldBounds: { x: 0, y: -1470, width: 500, height: 3000 },
+    playerStart: { x: 250, y: 1400 },
+    platforms: [
+      //ground Level
+      { type: 'ground', x: 250, y: 1500, w: 500, h: 40, color: 0x654321, bounce: 0.4, friction: 4.0 },
+      { type: 'wall', x: 10, y: 0, w: 20, h: 3000, color: 0x444444, bounce: 0.4, friction: 0.5 },
+      { type: 'wall', x: 490, y: 0, w: 20, h: 3000, color: 0x444444, bounce: 0.4, friction: 0.5 },
+      
+      //easy climb with wide platforms
+      { type: 'platform', x: 110, y: 1350, w: 167, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'platform', x: 360, y: 1200, w: 160, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'platform', x: 130, y: 1050, w: 150, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'platform', x: 380, y: 900, w: 150, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'platform', x: 250, y: 750, w: 180, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      
+      { type: 'platform', x: 120, y: 600, w: 140, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'platform', x: 380, y: 450, w: 140, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'platform', x: 200, y: 300, w: 160, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'platform', x: 300, y: 150, w: 160, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'platform', x: 180, y: 0, w: 140, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      
+      //rest platforms
+      { type: 'safe', x: 350, y: -150, w: 180, h: 20, color: 0x228B22, bounce: 0.3, friction: 4.0 },
+            //victory
+      { type: 'victory', x: 250, y: -320, w: 500, h: 25, color: 0xFFD700, bounce: 0.0, friction: 3.0 }
+    ],
+    decorations: [
+      { type: 'text', x: 250, y: 100, text: 'EASY COMPLETE!', style: { fontSize: '24px', fill: '#FFD700' } },
+      { type: 'text', x: 250, y: -1520, text: 'Nice job! Try Medium next!', style: { fontSize: '16px', fill: '#FFD700' } }
+    ]
+  },
+
+  // LEVEL 2: MEDIUM - Some narrow platforms, longer jumps
+  medium: {
+    name: "Medium Challenge",
+    worldBounds: { x: 0, y: -2200, width: 500, height: 3700 },
+    playerStart: { x: 250, y: 1400 },
+    platforms: [
+      //ground Level
+      { type: 'ground', x: 250, y: 1500, w: 500, h: 40, color: 0x654321, bounce: 0.4, friction: 4.0 },
+      { type: 'wall', x: 10, y: -500, w: 20, h: 3700, color: 0x444444, bounce: 0.4, friction: 0.5 },
+      { type: 'wall', x: 490, y: -500, w: 20, h: 3700, color: 0x444444, bounce: 0.4, friction: 0.5 },
+      
+      //starting section - still forgiving
+      { type: 'platform', x: 150, y: 1350, w: 130, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'platform', x: 380, y: 1200, w: 120, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'platform', x: 120, y: 1050, w: 130, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'platform', x: 400, y: 900, w: 120, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      
+      //first narrow section
+      { type: 'narrow', x: 200, y: 750, w: 100, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      { type: 'narrow', x: 420, y: 600, w: 90, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      { type: 'narrow', x: 150, y: 450, w: 85, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      { type: 'narrow', x: 380, y: 300, w: 95, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      
+      //rest area
+      { type: 'safe', x: 250, y: 150, w: 160, h: 20, color: 0x228B22, bounce: 0.3, friction: 4.0 },
+      
+      //mixed platforms
+      { type: 'platform', x: 100, y: 0, w: 110, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'narrow', x: 450, y: -150, w: 80, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      { type: 'platform', x: 180, y: -300, w: 100, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'narrow', x: 420, y: -450, w: 75, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      { type: 'platform', x: 150, y: -600, w: 110, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      
+      //some bouncy fun
+      { type: 'bouncy', x: 400, y: -750, w: 90, h: 15, color: 0x00ff00, bounce: 0.7, friction: 2.2 },
+      { type: 'bouncy', x: 120, y: -900, w: 85, h: 15, color: 0x00ff00, bounce: 0.7, friction: 2.2 },
+      { type: 'platform', x: 350, y: -1050, w: 100, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      
+      //final section
+      { type: 'narrow', x: 180, y: -1200, w: 90, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      { type: 'narrow', x: 450, y: -1350, w: 75, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      { type: 'platform', x: 200, y: -1500, w: 100, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'narrow', x: 400, y: -1650, w: 80, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      { type: 'platform', x: 150, y: -1800, w: 120, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'narrow', x: 420, y: -1950, w: 70, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      { type: 'platform', x: 200, y: -2100, w: 110, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      
+      //victory
+      { type: 'victory', x: 250, y: -2200, w: 180, h: 25, color: 0xFFD700, bounce: 0.0, friction: 3.0 }
+    ],
+    decorations: [
+      { type: 'text', x: 250, y: -2250, text: 'MEDIUM COMPLETE!', style: { fontSize: '24px', fill: '#FFD700' } },
+      { type: 'text', x: 250, y: -2220, text: 'Getting better! Try Hard mode!', style: { fontSize: '16px', fill: '#FFD700' } }
+    ]
+  },
+
+  // LEVEL 3: HARD - Ice platforms, smaller platforms, bouncy sections
+  hard: {
+    name: "Hard Ascent",
+    worldBounds: { x: 0, y: -2800, width: 500, height: 4300 },
+    playerStart: { x: 250, y: 1400 },
+    platforms: [
+      //ground Level
+      { type: 'ground', x: 250, y: 1500, w: 500, h: 40, color: 0x654321, bounce: 0.4, friction: 4.0 },
+      { type: 'wall', x: 10, y: -1000, w: 20, h: 4300, color: 0x444444, bounce: 0.4, friction: 0.5 },
+      { type: 'wall', x: 490, y: -1000, w: 20, h: 4300, color: 0x444444, bounce: 0.4, friction: 0.5 },
+      
+      //quick narrow start
+      { type: 'narrow', x: 180, y: 1350, w: 100, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      { type: 'narrow', x: 400, y: 1200, w: 90, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      { type: 'narrow', x: 150, y: 1050, w: 85, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      
+      //first ice section
+      { type: 'ice', x: 420, y: 900, w: 95, h: 12, color: 0x87CEEB, bounce: 0.5, friction: 1.1 },
+      { type: 'ice', x: 120, y: 750, w: 90, h: 12, color: 0x87CEEB, bounce: 0.5, friction: 1.1 },
+      { type: 'ice', x: 380, y: 600, w: 85, h: 12, color: 0x87CEEB, bounce: 0.5, friction: 1.1 },
+      { type: 'platform', x: 180, y: 450, w: 100, h: 15, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      
+      //Bouncy chaos
+      { type: 'bouncy', x: 450, y: 300, w: 80, h: 15, color: 0x00ff00, bounce: 0.8, friction: 2.0 },
+      { type: 'bouncy', x: 100, y: 150, w: 75, h: 15, color: 0x00ff00, bounce: 0.8, friction: 2.0 },
+      { type: 'bouncy', x: 400, y: 0, w: 85, h: 15, color: 0x00ff00, bounce: 0.8, friction: 2.0 },
+      { type: 'safe', x: 200, y: -150, w: 120, h: 18, color: 0x228B22, bounce: 0.3, friction: 4.0 },
+      
+      //ice and narrow mix
+      { type: 'ice', x: 450, y: -300, w: 70, h: 12, color: 0x87CEEB, bounce: 0.5, friction: 1.1 },
+      { type: 'narrow', x: 120, y: -450, w: 80, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      { type: 'ice', x: 400, y: -600, w: 75, h: 12, color: 0x87CEEB, bounce: 0.5, friction: 1.1 },
+      { type: 'narrow', x: 150, y: -750, w: 70, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      { type: 'ice', x: 420, y: -900, w: 80, h: 12, color: 0x87CEEB, bounce: 0.5, friction: 1.1 },
+      
+      //tiny platforms introduction
+      { type: 'tiny', x: 180, y: -1050, w: 60, h: 12, color: 0xff6b6b, bounce: 0.1, friction: 3.5 },
+      { type: 'tiny', x: 450, y: -1200, w: 55, h: 12, color: 0xff6b6b, bounce: 0.1, friction: 3.5 },
+      { type: 'platform', x: 200, y: -1350, w: 90, h: 15, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      
+      // more bouncy madness
+      { type: 'bouncy', x: 420, y: -1500, w: 75, h: 15, color: 0x00ff00, bounce: 0.8, friction: 2.0 },
+      { type: 'bouncy', x: 120, y: -1650, w: 80, h: 15, color: 0x00ff00, bounce: 0.8, friction: 2.0 },
+      { type: 'ice', x: 380, y: -1800, w: 70, h: 12, color: 0x87CEEB, bounce: 0.5, friction: 1.1 },
+      
+      { type: 'tiny', x: 150, y: -1950, w: 65, h: 12, color: 0xff6b6b, bounce: 0.1, friction: 3.5 },
+      { type: 'narrow', x: 450, y: -2100, w: 70, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      { type: 'ice', x: 180, y: -2250, w: 75, h: 12, color: 0x87CEEB, bounce: 0.5, friction: 1.1 },
+      { type: 'tiny', x: 420, y: -2400, w: 50, h: 12, color: 0xff6b6b, bounce: 0.1, friction: 3.5 },
+      { type: 'platform', x: 200, y: -2550, w: 85, h: 15, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'narrow', x: 400, y: -2700, w: 65, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      
+      //victory
+      { type: 'victory', x: 250, y: -2800, w: 160, h: 25, color: 0xFFD700, bounce: 0.0, friction: 3.0 }
+    ],
+    decorations: [
+      { type: 'text', x: 250, y: -2850, text: 'HARD COMPLETE!', style: { fontSize: '24px', fill: '#FFD700' } },
+      { type: 'text', x: 250, y: -2820, text: 'Impressive! Ready for Extreme?', style: { fontSize: '16px', fill: '#FFD700' } }
+    ]
+  },
+
+  // LEVEL 4: EXTREME - All mechanics, very challenging
+  extreme: {
+    name: "Extreme Tower",
+    worldBounds: { x: 0, y: -3200, width: 500, height: 4700 },
+    playerStart: { x: 250, y: 1400 },
+    platforms: [
+      //ground Level
+      { type: 'ground', x: 250, y: 1500, w: 500, h: 40, color: 0x654321, bounce: 0.4, friction: 4.0 },
+      { type: 'wall', x: 10, y: -1200, w: 20, h: 4700, color: 0x444444, bounce: 0.4, friction: 0.5 },
+      { type: 'wall', x: 490, y: -1200, w: 20, h: 4700, color: 0x444444, bounce: 0.4, friction: 0.5 },
+      
+      //immediate challenge
+      { type: 'tiny', x: 180, y: 1350, w: 60, h: 12, color: 0xff6b6b, bounce: 0.1, friction: 3.5 },
+      { type: 'ice', x: 420, y: 1200, w: 70, h: 12, color: 0x87CEEB, bounce: 0.6, friction: 1.05 },
+      { type: 'tiny', x: 120, y: 1050, w: 55, h: 12, color: 0xff6b6b, bounce: 0.1, friction: 3.5 },
+      { type: 'bouncy', x: 400, y: 900, w: 65, h: 15, color: 0x00ff00, bounce: 0.9, friction: 1.8 },
+      
+      //super bouncy introduction
+      { type: 'super_bouncy', x: 150, y: 750, w: 70, h: 15, color: 0xff1493, bounce: 1.2, friction: 1.5 },
+      { type: 'ice', x: 450, y: 600, w: 60, h: 12, color: 0x87CEEB, bounce: 0.6, friction: 1.05 },
+      { type: 'tiny', x: 180, y: 450, w: 50, h: 12, color: 0xff6b6b, bounce: 0.1, friction: 3.5 },
+      { type: 'super_bouncy', x: 400, y: 300, w: 65, h: 15, color: 0xff1493, bounce: 1.2, friction: 1.5 },
+      
+      //brief rest
+      { type: 'safe', x: 250, y: 150, w: 100, h: 18, color: 0x228B22, bounce: 0.3, friction: 4.0 },
+      
+      //mixed hell begins
+      { type: 'ice', x: 450, y: 0, w: 55, h: 12, color: 0x87CEEB, bounce: 0.7, friction: 1.03 },
+      { type: 'tiny', x: 120, y: -150, w: 45, h: 10, color: 0xff6b6b, bounce: 0.1, friction: 4.0 },
+      { type: 'super_bouncy', x: 380, y: -300, w: 60, h: 15, color: 0xff1493, bounce: 1.3, friction: 1.2 },
+      { type: 'ice', x: 150, y: -450, w: 65, h: 12, color: 0x87CEEB, bounce: 0.6, friction: 1.05 },
+      { type: 'tiny', x: 450, y: -600, w: 40, h: 10, color: 0xff6b6b, bounce: 0.1, friction: 4.0 },
+      { type: 'bouncy', x: 180, y: -750, w: 70, h: 15, color: 0x00ff00, bounce: 0.8, friction: 2.0 },
+      
+      { type: 'super_bouncy', x: 420, y: -900, w: 55, h: 15, color: 0xff1493, bounce: 1.4, friction: 1.0 },
+      { type: 'ice', x: 120, y: -1050, w: 60, h: 12, color: 0x87CEEB, bounce: 0.7, friction: 1.03 },
+      { type: 'tiny', x: 400, y: -1200, w: 45, h: 10, color: 0xff6b6b, bounce: 0.1, friction: 4.2 },
+      { type: 'super_bouncy', x: 180, y: -1350, w: 65, h: 15, color: 0xff1493, bounce: 1.3, friction: 1.2 },
+      { type: 'ice', x: 450, y: -1500, w: 50, h: 12, color: 0x87CEEB, bounce: 0.8, friction: 1.02 },
+      
+      //Gauntlet section
+      { type: 'tiny', x: 150, y: -1650, w: 40, h: 8, color: 0xff6b6b, bounce: 0.1, friction: 4.5 },
+      { type: 'super_bouncy', x: 420, y: -1800, w: 50, h: 12, color: 0xff1493, bounce: 1.5, friction: 0.8 },
+      { type: 'ice', x: 180, y: -1950, w: 55, h: 10, color: 0x87CEEB, bounce: 0.8, friction: 1.02 },
+      { type: 'tiny', x: 450, y: -2100, w: 35, h: 8, color: 0xff6b6b, bounce: 0.1, friction: 4.8 },
+      { type: 'super_bouncy', x: 120, y: -2250, w: 60, h: 12, color: 0xff1493, bounce: 1.4, friction: 0.5 },
+      { type: 'ice', x: 400, y: -2400, w: 50, h: 10, color: 0x87CEEB, bounce: 0.8, friction: 1.02 },
+      
+      //final approach
+      { type: 'tiny', x: 200, y: -2550, w: 45, h: 10, color: 0xff6b6b, bounce: 0.1, friction: 4.0 },
+      { type: 'super_bouncy', x: 450, y: -2700, w: 55, h: 12, color: 0xff1493, bounce: 1.3, friction: 1.0 },
+      { type: 'ice', x: 150, y: -2850, w: 60, h: 12, color: 0x87CEEB, bounce: 0.6, friction: 1.05 },
+      { type: 'tiny', x: 420, y: -3000, w: 40, h: 10, color: 0xff6b6b, bounce: 0.1, friction: 4.2 },
+      { type: 'narrow', x: 200, y: -3150, w: 70, h: 12, color: 0x696969, bounce: 0.2, friction: 3.5 },
+      
+      //victory
+      { type: 'victory', x: 250, y: -3200, w: 140, h: 25, color: 0xFFD700, bounce: 0.0, friction: 3.0 }
+    ],
+    decorations: [
+      { type: 'text', x: 250, y: -3250, text: 'EXTREME COMPLETE!', style: { fontSize: '24px', fill: '#FFD700' } },
+      { type: 'text', x: 250, y: -3220, text: 'You are truly skilled! Try Fling Tower!', style: { fontSize: '16px', fill: '#FFD700' } }
+    ]
+  },
+
   fling: {
     name: "Fling Tower",
     worldBounds: { x: 0, y: -3500, width: 500, height: 8000 }, //much taller tower
@@ -94,12 +310,12 @@ const MAPS = {
   tutorial: {
     name: "Tutorial",
     worldBounds: { x: 0, y: 0, width: 500, height: 2000 },
-    playerStart: { x: 250, y: 1950 },
+    playerStart: { x: 250, y: 1800 },
     platforms: [
-      { type: 'ground', x: 250, y: 2000, w: 500, h: 40, color: 0x654321, bounce: 0.4, friction: 4.5 },
-      { type: 'platform', x: 150, y: 1850, w: 120, h: 15, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
-      { type: 'platform', x: 350, y: 1700, w: 120, h: 15, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
-      { type: 'victory', x: 250, y: 1550, w: 200, h: 20, color: 0xFFD700, bounce: 0.0, friction: 4.0 },
+      { type: 'ground', x: 250, y: 1900, w: 500, h: 40, color: 0x654321, bounce: 0.4, friction: 4.5 },
+      { type: 'platform', x: 150, y: 1750, w: 220, h: 15, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'platform', x: 350, y: 1600, w: 220, h: 15, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'victory', x: 250, y: 1500, w: 500, h: 10, color: 0xFFD700, bounce: 0.0, friction: 4.0 },
       
       //left wall
       { type: 'platform', x: 0, y: 1000, w: 20, h: 2000, color: 0x444444, bounce: 0.0, friction: 3.0 },
@@ -117,7 +333,7 @@ const MAPS = {
       },
       {
         type: 'text',
-        x: 245,
+        x: 250,
         y: 1220,
         text: () => currentLanguage === 'en'
           ? '\n1. Use mouse click to jump\nand point in the direction\n\n2. On mobile\nTap where you want to jump'
@@ -129,8 +345,8 @@ const MAPS = {
         x: 250,
         y: 1380,
         text: () => currentLanguage === 'en'
-          ? '\n\n3. And you jump and jump\nUntil you reach the summit\n\n4.It’s quite far,GOOD LUCK!\n\n5.Try the buttons below to\nswitch maps'
-          : '\n\n3. ジャンプし続けて\n山頂を目指しましょう\n\n4.かなり遠いので頑張って！\n\n5.下のボタンでマップを\n切り替えられます',
+          ? '\n3. And you jump and jump till\nyou reach the Yellow summit\n\n4.Try the buttons below to\nswitch maps\n\n5.GOOD LUCK!!!'
+          : '\n\n3. ジャンプし続けて\n黄色山頂を目指しましょう\n\n4.下のボタンでマップを\n切り替えられます\n\n5.頑張って！!!',
         style: { fontSize: '20px', fill: '#ffffff' }
       }
     ]
@@ -173,22 +389,167 @@ let needleTween;
 
 let leftEyebrow, rightEyebrow;
 
+let currentMapKey = null;//map name hold
+
+//menus option and state
+let isPaused = false;
+let pauseButton;
+let pauseOverlay;
+
 
 const game = new Phaser.Game(config);
 
 function preload() {
-  this.load.image('forestBase', 'assets/8bit-jungle.jpg');
-  console.log('Preloading assets...');
+  const scene = this;
+
+  // Loading UI
+  const loadingText = scene.add.text(
+    scene.scale.width / 2, scene.scale.height / 2,
+    'Loading...',
+    { fontSize: '24px', fill: '#ffffff', fontFamily: 'Arial' }
+  ).setOrigin(0.5).setScrollFactor(0);
+
+  const progressBox = scene.add.rectangle(scene.scale.width / 2, scene.scale.height / 2 + 40, 300, 25, 0x222222).setOrigin(0.5);
+  const progressBar = scene.add.rectangle(scene.scale.width / 2 - 150, scene.scale.height / 2 + 40, 0, 25, 0xffffff).setOrigin(0, 0.5);
+
+  let loadComplete = false;
+  let minDelayPassed = false;
+
+  scene.load.on('progress', (value) => {
+    progressBar.width = 300 * value;
+  });
+
+  // When assets are done loading
+  scene.load.on('complete', () => {
+    loadComplete = true;
+    maybeContinue();
+  });
+
+  // 2 second delay using Phaser timer
+  scene.time.delayedCall(2000, () => {
+    minDelayPassed = true;
+    maybeContinue();
+  });
+
+  function maybeContinue() {
+    if (loadComplete && minDelayPassed) {
+      loadingText.destroy();
+      progressBar.destroy();
+      progressBox.destroy();
+      console.log('Loading screen finished');
+    }
+  }
+
+  // Load your assets
+  scene.load.image('forestBase', 'assets/8bit-jungle.jpg');
 }
+
 
 function create() {
   setupUI(this);
   setupPlayer(this);
   setupInput(this);
-  
+
   //laoad the default map
   loadMap(this, 'tutorial');
 }
+
+//toggle pause and menu
+function togglePause(scene) {
+  isPaused = !isPaused;
+
+  const isJapanese = currentLanguage === 'jp';
+
+  const textLabels = {
+    pause: isJapanese ? '再開' : 'RESUME',
+    resume: isJapanese ? '一時停止' : 'PAUSE',
+    restart: isJapanese ? '[ リスタート ]' : '[ RESTART ]',
+    maps: {
+      easy: isJapanese ? '[ イージー ]' : '[ EASY ]',
+      medium: isJapanese ? '[ ミディアム ]' : '[ MEDIUM ]',
+      hard: isJapanese ? '[ ハード ]' : '[ HARD ]',
+      extreme: isJapanese ? '[ エクストリーム ]' : '[ EXTREME ]',
+      fling: isJapanese ? '[ フリングタワー ]' : '[ FLING TOWER ]',
+      tutorial: isJapanese ? '[ チュートリアル ]' : '[ TUTORIAL ]'
+    }
+  };
+  if (isPaused) {
+    scene.physics.world.pause();
+    scene.cameras.main.stopFollow();
+
+    //change PAUSE to RESUME
+    if (pauseButton) pauseButton.setText(textLabels.pause);
+
+    //overlay
+    pauseOverlay = scene.add.rectangle(
+      0, 0, scene.scale.width, scene.scale.height, 0x000000, 0.6
+    ).setOrigin(0).setScrollFactor(0).setDepth(1999);
+
+    pauseOverlay.menuItems = [];
+
+    const centerX = scene.scale.width / 2;
+    let startY = (scene.scale.height / 2) - (320 / 2); // vertically center
+
+
+    //restart button
+    const restartBtn = scene.add.text(centerX, startY, textLabels.restart, textStyle())
+      .setOrigin(0.5).setInteractive({ useHandCursor: true }).setScrollFactor(0).setDepth(2000)
+      .on('pointerdown', () => {
+        hasWon = false;
+        togglePause(scene);
+        loadMap(scene, currentMapKey);
+
+      });      
+    pauseOverlay.menuItems.push(restartBtn);
+    startY += 50;
+
+    //map buttons
+    const mapKeys = ['easy', 'medium', 'hard', 'extreme', 'fling', 'tutorial'];
+    mapKeys.forEach(key => {
+      const btn = scene.add.text(centerX, startY, textLabels.maps[key], textStyle())
+        .setOrigin(0.5).setInteractive({ useHandCursor: true }).setScrollFactor(0).setDepth(2000)
+        .on('pointerdown', () => {
+          togglePause(scene);
+          loadMap(scene, key);
+        });
+      pauseOverlay.menuItems.push(btn);
+      startY += 40;
+    });
+
+    //add RESUME button at the bottom
+    const resumeBtn = scene.add.text(centerX, startY + 10, isJapanese ? '[ 再開 ]' : '[ RESUME ]', textStyle())
+    .setOrigin(0.5).setInteractive({ useHandCursor: true }).setScrollFactor(0).setDepth(2000)
+    .on('pointerdown', () => {
+      togglePause(scene);
+    });
+  pauseOverlay.menuItems.push(resumeBtn);
+
+
+  } else {
+    scene.physics.world.resume();
+    scene.cameras.main.startFollow(player, true, 0.1, 0.1);
+    if (pauseButton) pauseButton.setText(textLabels.resume);
+
+    //destroy pause menu
+    if (pauseOverlay) {
+      pauseOverlay.menuItems.forEach(item => item.destroy());
+      pauseOverlay.destroy();
+      pauseOverlay = null;
+    }
+  }
+}
+
+//text style helper
+function textStyle() {
+  return {
+    fontSize: '20px',
+    fill: '#ffffff',
+    fontFamily: 'Arial',
+    stroke: '#000',
+    strokeThickness: 3
+  };
+}
+
 
 function setupUI(scene) {
   const barWidth = 100;
@@ -198,7 +559,7 @@ function setupUI(scene) {
   const fixedX = screenWidth / 2;
   const fixedY = screenHeight - 50;
 
-  //Power meter
+  //power meter
   const gradientCanvas = scene.textures.createCanvas('powerGradient', barWidth, barHeight);
   const ctx = gradientCanvas.getContext();
   const grad = ctx.createLinearGradient(0, 0, barWidth, 0);
@@ -235,7 +596,7 @@ function setupUI(scene) {
   });
     
 
-  //Add map selection UI
+  //add map selection UI
   const buttonStyle = {
     fontSize: '18px',
     fill: '#ffffff',
@@ -243,30 +604,7 @@ function setupUI(scene) {
     stroke: '#000',
     strokeThickness: 3
   };
-  
-  //fling tower button bottom left
-  //tutorial button bottom right
-  const flingLabel = currentLanguage === 'en' ? '[ Fling Tower ]' : '[ フリング・タワー ]';
-  const tutorialLabel = currentLanguage === 'en' ? '[ Tutorial ]' : '[ チュートリアル ]';
 
-  flingBtn = scene.add.text(20, scene.scale.height - 30, flingLabel, buttonStyle)
-    .setScrollFactor(0)
-    .setDepth(100)
-    .setInteractive({ useHandCursor: true })
-    .on('pointerdown', () => {
-    if (hasWon) return;
-      loadMap(scene, 'fling');
-  });
-
-  tutorialBtn = scene.add.text(scene.scale.width - 20, scene.scale.height - 30, tutorialLabel, buttonStyle)
-    .setOrigin(1, 0)
-    .setScrollFactor(0)
-    .setDepth(100)
-    .setInteractive({ useHandCursor: true })
-    .on('pointerdown', () => {
-    if (hasWon) return;
-      loadMap(scene, 'tutorial');
-  });
   
   //language
   const langBtn = scene.add.text(scene.scale.width - 20, 20, '[日本語]', {
@@ -281,32 +619,22 @@ function setupUI(scene) {
   .setDepth(100)
   .setInteractive({ useHandCursor: true })
   .on('pointerdown', () => {
-  if(hasWon) return;
-  currentLanguage = (currentLanguage === 'en') ? 'jp' : 'en';
-  langBtn.setText(currentLanguage === 'en' ? '[日本語]' : '[ENG]');
-
-  //fling tower and tutoril button bottom change lang
-  if (flingBtn) {
-    flingBtn.setText(currentLanguage === 'en' ? '[ Fling Tower ]' : '[ フリング・タワー ]');
-  }
-  if (tutorialBtn) {
-    tutorialBtn.setText(currentLanguage === 'en' ? '[ Tutorial ]' : '[ チュートリアル ]');
-  }
+    if(hasWon) return;
+    currentLanguage = (currentLanguage === 'en') ? 'jp' : 'en';
+    langBtn.setText(currentLanguage === 'en' ? '[日本語]' : '[ENG]');
   
-  
-    // Update POWER label
+    //update POWER label
     if (powerLabel) {
       powerLabel.setText(currentLanguage === 'en' ? 'POWER' : 'パワー');
     }
-  
-    // Reload map to update decorations
+
+    //reload map to update decorations
     if (currentMap === MAPS.tutorial) {
       loadMap(scene, 'tutorial');
     } else if (currentMap === MAPS.fling) {
       loadMap(scene, 'fling');
     }
-  });
-  
+  }); 
 }
 
 function setupPlayer(scene) {
@@ -400,11 +728,6 @@ function setupInput(scene) {
       jumpDirection.y * 800 * powerLevel
     );
   });
-  
-
-  //Keyboard controls remain unchanged
-  scene.input.keyboard.on('keydown-ONE', () => loadMap(scene, 'fling'));
-  scene.input.keyboard.on('keydown-TWO', () => loadMap(scene, 'tutorial'));
 }
 
 function updateEyePositions(scene) {
@@ -449,7 +772,7 @@ function updateEyePositions(scene) {
 
   //eyebrow position
   if (leftEyebrow) {
-    leftEyebrow.setPosition(leftPupil.x, leftPupil.y - 6); // Slightly above
+    leftEyebrow.setPosition(leftPupil.x, leftPupil.y - 6);
   }
   if (rightEyebrow) {
     rightEyebrow.setPosition(rightPupil.x, rightPupil.y - 6);
@@ -479,6 +802,7 @@ function loadMap(scene, mapName) {
       return;
     }
   currentMap = mapData;
+  currentMapKey = mapName;
   
   //set world bounds
   const bounds = mapData.worldBounds;
@@ -489,11 +813,34 @@ function loadMap(scene, mapName) {
   player.setPosition(mapData.playerStart.x, mapData.playerStart.y);
   player.body.setVelocity(0, 0);
   canThrow = true;
+  
+  ////pause Button (Top Left)
+  //reset pause state
+  isPaused = false;
+  if (pauseOverlay) {
+    pauseOverlay.destroy();
+    pauseOverlay = null;
+  }
+  if (pauseButton) pauseButton.destroy();
 
-  //Reset direction vector
+  //add Pause Button (Top Left)
+  pauseButton = scene.add.text(20, 20, currentLanguage === 'jp' ? '一時停止' : 'PAUSE', {
+    fontSize: '21px',
+    fill: '#fff',
+    fontFamily: 'Arial',
+    stroke: '#000',
+    strokeThickness: 3
+    })
+    .setInteractive({ useHandCursor: true })
+    .setScrollFactor(0).setDepth(999)
+    .on('pointerdown', () => togglePause(scene));
+  
+
+
+  //reset direction vector
   directionVector = new Phaser.Math.Vector2(0, -1);
 
-  //Load background
+  //load background
   loadBackground(scene, mapData);
   
   //load platforms
@@ -524,7 +871,7 @@ function loadBackground(scene, mapData) {
   const bounds = mapData.worldBounds;
   const centerY = bounds.y + bounds.height / 2;
   
-  scene.add.image(250, centerY, 'forestBase')
+  scene.add.image(250, 1500, 'forestBase')
     .setOrigin(0.5, 0.5)
     .setScale(1)
     .setAlpha(0.6)
@@ -580,7 +927,7 @@ function loadDecorations(scene, decorations) {
   function update() {
     const onGround = player.body.blocked.down || player.body.touching.down;
   
-    // Tweak air control
+    //air control
     if (!onGround) {
       player.body.setVelocity(
         player.body.velocity.x * 0.985,
@@ -593,19 +940,19 @@ function loadDecorations(scene, decorations) {
       );
     }
   
-    // Reset launch ability if player slows down
+    //reset launch ability if player slows down
     if (player.body.speed < 9) {
       player.body.setVelocity(0, 0);
       canThrow = true;
     }
   
-    // Needle logic
+    //needle logic
     if (!canThrow && needleTween?.isPlaying()) needleTween.pause();
     if (canThrow && needleTween && !needleTween.isPlaying()) needleTween.resume();
   
     updateEyePositions(this);
   
-  //Vivtory
+  //Victory
   if (!hasWon) {
     //touching victory platform
     loadedSurfaces.forEach(surface => {
@@ -674,9 +1021,8 @@ function handleVictory() {
       }).setOrigin(0.5).setScrollFactor(0).setDepth(1001);
       victoryUI.push(title);
 
-      const nextLabel = currentLanguage === 'en' ? '[ Next Map ]' : '[ 次のマップ ]';
-      const nextBtn = scene.add.text(centerX, centerY + 10, nextLabel, {
-      
+      const menuLabel = currentLanguage === 'en' ? '[ MENU ]' : '[ メニュー ]';
+      const menuBtn = scene.add.text(centerX, centerY + 10, menuLabel, {
         fontSize: '20px',
         fill: '#ffffff',
         fontFamily: 'Arial',
@@ -684,15 +1030,15 @@ function handleVictory() {
         strokeThickness: 2
       }).setOrigin(0.5).setInteractive({ useHandCursor: true }).setScrollFactor(0).setDepth(1001)
         .on('pointerdown', () => {
-          hasWon = false;
-          loadMap(scene, currentMap.name === 'Tutorial' ? 'fling' : 'tutorial');
-        });
-      victoryUI.push(nextBtn);
+        hasWon = false;
+        togglePause(scene); //open pause menu
+      });
+      victoryUI.push(menuBtn);
 
       const restartLabel = currentLanguage === 'en' ? '[ Restart ]' : '[ リスタート ]';
       const restartBtn = scene.add.text(centerX, centerY + 50, restartLabel, {
 
-        fontSize: '20px',
+        fontSize: '24px',
         fill: '#ffffff',
         fontFamily: 'Arial',
         stroke: '#000',
@@ -700,7 +1046,7 @@ function handleVictory() {
       }).setOrigin(0.5).setInteractive({ useHandCursor: true }).setScrollFactor(0).setDepth(1001)
         .on('pointerdown', () => {
           hasWon = false;
-          loadMap(scene, currentMap.name === 'Fling Tower' ? 'fling' : 'tutorial');
+          loadMap(scene, currentMapKey);
         });
       victoryUI.push(restartBtn);
     }
