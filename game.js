@@ -1,5 +1,23 @@
 //map definitions - separated from game logic
 const MapOrder = ['tutorial', 'easy', 'medium', 'hard', 'extreme', 'fling'];
+const platformScores = {
+  platform: 4,
+  narrow: 5,
+  tiny: 6,
+  ice: 7,
+  bouncy: 4,
+  super_bouncy: 8,
+  safe: 1,
+  ground: 0,
+  wall: 0,
+  victory: 10 // optional reward
+};
+
+let score = 0;
+let jumpCount = 0;
+let passedPlatforms = new Set();
+let platformAboveTime = new Map();
+
 const MAPS = {
   // LEVEL 1: EASY - Simple platforms, no special mechanics
   easy: {
@@ -26,6 +44,7 @@ const MAPS = {
       { type: 'victory', x: 250, y: 280, w: 500, h: 25, color: 0xFFD700, bounce: 0.0, friction: 3.0 }
     ],
     decorations: [
+      { type: 'text', x: 250, y: 1340, text: 'EASY', style: { fontSize: '24px', fill: '#FFD700' } },
       { type: 'text', x: 250, y: 180, text: 'EASY COMPLETE!', style: { fontSize: '24px', fill: '#FFD700' } },
       { type: 'text', x: 250, y: 150, text: 'Nice job! Try Medium next!', style: { fontSize: '16px', fill: '#FFD700' } }
     ]
@@ -52,7 +71,7 @@ const MAPS = {
       { type: 'narrow', x: 200, y: 750, w: 100, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
       { type: 'narrow', x: 420, y: 600, w: 90, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
       { type: 'narrow', x: 150, y: 450, w: 85, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
-      { type: 'narrow', x: 380, y: 300, w: 95, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      { type: 'narrow', x: 390, y: 300, w: 105, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
       
       //rest area
       { type: 'safe', x: 250, y: 150, w: 160, h: 20, color: 0x228B22, bounce: 0.3, friction: 4.0 },
@@ -67,6 +86,7 @@ const MAPS = {
       { type: 'victory', x: 250, y: -580, w: 480, h: 25, color: 0xFFD700, bounce: 0.0, friction: 3.0 }
     ],
     decorations: [
+      { type: 'text', x: 250, y: 1340, text: 'MEDIUM', style: { fontSize: '24px', fill: '#FFD700' } },
       { type: 'text', x: 250, y: -920, text: 'MEDIUM COMPLETE!', style: { fontSize: '24px', fill: '#FFD700' } },
       { type: 'text', x: 250, y: -850, text: 'Getting better! Try Hard mode!', style: { fontSize: '16px', fill: '#FFD700' } }
     ]
@@ -355,6 +375,16 @@ const config = {
 //langugae
 let currentLanguage = 'en'; //default: English
 
+//music asset vars
+let musicIndex = 0;
+let lofiTracks = [];
+let currentTrack = null;
+
+//sound ef
+let jumpSfx;
+let loadingHum;
+let scoreDingSfx;
+
 
 //game state
 let player, needle, powerMeter, powerLevel = 1, directionVector, canThrow = true;
@@ -383,44 +413,182 @@ let pauseOverlay;
 
 const game = new Phaser.Game(config);
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //preload screen and preload assets
+
 function preload() {
-  const scene = this;
+  const width = this.cameras.main.width;
+  const height = this.cameras.main.height;
+  //Background fade-in
+  this.cameras.main.fadeIn(800, 0, 0, 0);
+  this.add.rectangle(0, 0, width, height, 0x111133).setOrigin(0);
 
-  const loadingText = scene.add.text(scene.scale.width / 2, scene.scale.height / 2 - 50, 'Loading...', {
-    fontSize: '24px', fill: '#ffffff', fontFamily: 'Arial'
-  }).setOrigin(0.5);
+  // Pixel font or fallback
+  const fontStyle = {
+    fontSize: '28px',
+    fill: '#ffffff',
+    fontFamily: 'Courier New',
+    stroke: '#000000',
+    strokeThickness: 2
+  };
 
-  const progressBox = scene.add.rectangle(scene.scale.width / 2, scene.scale.height / 2 + 40, 300, 25, 0x222222).setOrigin(0.5);
-  const progressBar = scene.add.rectangle(scene.scale.width / 2 - 150, scene.scale.height / 2 + 40, 0, 25, 0xffffff).setOrigin(0, 0.5);
+  //Flickering "Loading..." with animated dots
+  const loadingBase = 'LOADING\n';
+  let dotCount = 0;
+  const loadingText = this.add.text(width / 2, height / 2 - 80, loadingBase, fontStyle).setOrigin(0.5);
 
-  // Animate the progress bar manually from 0 to full over 2 seconds
-  scene.tweens.add({
-    targets: progressBar,
-    width: 250,
-    duration: 500,
-    ease: 'Linear',
-    onComplete: () => {
-      // Clean up loading visuals
-      loadingText.destroy();
-      progressBox.destroy();
-      progressBar.destroy();
+  const dotTimer = this.time.addEvent({
+    delay: 400,
+    loop: true,
+    callback: () => {
+      dotCount = (dotCount + 1) % 4;
+      loadingText.setText(loadingBase + ' .'.repeat(dotCount));
+      loadingText.setAlpha(0.7 + Math.random() * 0.3); //flicker effect
     }
   });
 
-  // Load your assets (they’ll be ready quickly)
-  scene.load.image('forestBase', 'assets/8bit-jungle.jpg');
-  // You can load more assets here too
+  //Progress bar
+  const box = this.add.rectangle(width / 2, height / 2, 320, 50, 0x222222).setOrigin(0.5).setStrokeStyle(2, 0xffffff);
+  const bar = this.add.rectangle(width / 2 - 150, height / 2, 0, 30, 0xffff00).setOrigin(0, 0.5);
+
+  this.load.on('progress', (value) => {
+    bar.width = 300 * value;
+  });
+
+  //Bonus: Tips
+  // rotating Tips
+  const tips = [
+    "Tip: Use you finger to tap on screen, not your toe!",
+    "Tip: You can retry maps anytime!",
+    "Tip: if you 100% ignore the monkey, they won't bite you",
+    "Tip: Rage-quitting is a valid strategy. Temporarily.",
+    "Tip: Falling is part of the journey.Just...not too much",
+    "Tip: Blaming lag is allowed. Even offline.",
+    "Tip: Jumping off cliffs is NOT a shortcut.",
+    "Tip: Platforms aren't supposed to move. Probably.",
+    "Tip: If you close your eyes, the jump gets harder.",
+    "Tip: That golden platform isn't a trap. Or is it?",
+    "Tip: The walls are not your friends.",
+    "Tip: Screaming at the screen improves accuracy by 0.01%",
+    "Tip: Don’t look down. Too late.",
+    "Tip: Pressing harder does not make you jump higher.",
+    "Tip: Spamming clicks won't help. Much.",
+    "Tip: Holding your breath during jumps is optional.",
+    "Tip: If you can dodge a wrench, you can dodge a fall.",
+    "Tip: Every jump you miss is one step \ncloser to greatness.Or the restart button."
+  ];
+
+let currentTipIndex = Phaser.Math.Between(0, tips.length - 1);
+const tipText = this.add.text(width / 2, height / 2 + 80, tips[currentTipIndex], {
+  fontSize: '18px',
+  fill: '#cccccc',
+  fontFamily: 'Arial'
+}).setOrigin(0.5).setAlpha(0.8);
+
+// rotate tip every 3 seconds
+const tipTimer = this.time.addEvent({
+  delay: 4500,
+  loop: true,
+  callback: () => {
+    currentTipIndex = (currentTipIndex + 1) % tips.length;
+    tipText.setText(tips[currentTipIndex]);
+  }
+});
+
+  //cleanup on load complete
+  this.load.on('complete', () => {
+    dotTimer.remove();
+    tipTimer.remove();
+    loadingText.destroy();
+    bar.destroy();
+    box.destroy();
+    tipText.destroy();
+  });
+  
+
+  //load your assets
+
+  //images load//////////////////////////////////////////////////
+  this.load.image('forestBase', 'assets/images/8bit-jungle.jpg');
+
+  //audios load/////////////////////////////////////////////////
+  for (let i = 1; i <= 16; i++) {
+    this.load.audio(`lofi${i}`, `assets/musics/lofi${i}.mp3`);
+  }
+  this.load.audio('jumpSound', 'assets/SoundEffects/8bitJump.mp3');
+  this.load.audio('scoreDing', 'assets/SoundEffects/point.mp3');
+
 }
 
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////CREATE SECTION////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function create() {
-    // Code to run after 2 seconds
-    setupUI(this);
-    setupPlayer(this);
-    setupInput(this);
-    loadMap(this, 'tutorial');
+  for (let i = 1; i <= 16; i++) {
+    lofiTracks.push(this.sound.add(`lofi${i}`, { volume: 0.6 }));
+  }
+  jumpSfx = this.sound.add('jumpSound', { volume: 0.13 });
+  scoreDingSfx = this.sound.add('scoreDing', { volume: 0.1 });
+
+
+  playNextTrack(this);
+  setupUI(this);
+  setupPlayer(this);
+  setupInput(this);
+  loadMap(this, 'tutorial');
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////HELPER FUNCTIONS////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//music player func
+function playNextTrack(scene) {
+  if (currentTrack) {
+    currentTrack.stop();
+  }
+
+  currentTrack = lofiTracks[musicIndex];
+  currentTrack.play();
+
+  currentTrack.once('complete', () => {
+    musicIndex = (musicIndex + 1) % lofiTracks.length;
+    playNextTrack(scene);
+  });
+}
+
+//score add animation
+function animatePointGain(scene, startX, startY, amount) {
+  const floatText = scene.add.text(startX, startY, `+${amount}`, {
+    fontSize: '24px',
+    fill: '#00ff00',
+    fontFamily: 'Arial',
+    stroke: '#000',
+    strokeThickness: 3
+  }).setOrigin(0.5).setDepth(999);
+
+  floatText.setScale(0);
+
+  const targetX = scene.scale.width / 2;
+  const targetY = 10;
+
+  scene.tweens.add({
+    targets: floatText,
+    x: targetX,
+    y: targetY,
+    scaleX: 1,
+    scaleY: 1,
+    duration: 800,
+    ease: 'Power2',
+    onComplete: () => floatText.destroy()
+  });
+}
+
 
 //toggle pause and menu
 function togglePause(scene) {
@@ -518,7 +686,11 @@ function textStyle() {
   };
 }
 
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////SET UP FUNCTIONS/////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function setupUI(scene) {
   const barWidth = 100;
   const barHeight = 20;
@@ -563,7 +735,6 @@ function setupUI(scene) {
     }
   });
     
-
   //add map selection UI
   const buttonStyle = {
     fontSize: '18px',
@@ -572,7 +743,6 @@ function setupUI(scene) {
     stroke: '#000',
     strokeThickness: 3
   };
-
   
   //language
   const langBtn = scene.add.text(scene.scale.width - 20, 20, '[日本語]', {
@@ -600,8 +770,18 @@ function setupUI(scene) {
     if (currentMapKey) {
       loadMap(scene, currentMapKey);
     }
-    
   }); 
+    scene.scoreText = scene.add.text(scene.scale.width / 2, 5, 'Score: 0', {
+      fontSize: '24px',
+      fill: '#ffffff',
+      fontFamily: 'Arial',
+      stroke: '#000000',
+      strokeThickness: 3
+    })
+    .setOrigin(0.5, 0)
+    .setScrollFactor(0)
+    .setDepth(999);
+    
 }
 
 function setupPlayer(scene) {
@@ -672,6 +852,7 @@ function setupInput(scene) {
   
     if (!canThrow) return;
     canThrow = false;
+    jumpCount++;
   
     let jumpDirection;
   
@@ -689,8 +870,17 @@ function setupInput(scene) {
       jumpDirection.x * 300 * powerLevel,
       jumpDirection.y * 800 * powerLevel
     );
+    jumpSfx.play();
   });
 }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////UPDATE FUNCTIONS/////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 function updateEyePositions(scene) {
   const eyeOffsetX = 18;
@@ -743,6 +933,14 @@ function updateEyePositions(scene) {
 }
 
 function loadMap(scene, mapName) {
+    
+    score = 0;
+    jumpCount = 0;
+    passedPlatforms.clear();
+    platformAboveTime.clear();
+    scene.scoreText.setVisible(true);
+    scene.scoreText.setText('Score: 0');
+  
     hasWon = false;
     canThrow = true;
     wasOnGround = false;
@@ -892,8 +1090,8 @@ function loadDecorations(scene, decorations) {
   //Player physics
   function update() {
     const onGround = player.body.blocked.down || player.body.touching.down;
-
-    //air control
+  
+    // Air control
     if (!onGround) {
       player.body.setVelocity(
         player.body.velocity.x * 0.985,
@@ -906,7 +1104,41 @@ function loadDecorations(scene, decorations) {
       );
     }
   
-    //reset launch ability if player slows down
+    //platform passing detection (above platform for 2 seconds)
+    const currentTime = performance.now();
+    loadedSurfaces.forEach(surface => {
+      if (!surface.rect || passedPlatforms.has(surface.rect)) return;
+  
+      const platformY = surface.rect.y;
+      const playerY = player.y;
+  
+      //if player is significantly above this platform
+      if (playerY < platformY - 20) {
+        if (!platformAboveTime.has(surface.rect)) {
+          platformAboveTime.set(surface.rect, currentTime);
+        } else {
+          const firstAbove = platformAboveTime.get(surface.rect);
+          if (currentTime - firstAbove >= 1000) {
+            passedPlatforms.add(surface.rect);
+            const value = platformScores[surface.type] || 0;
+            score += value;
+
+          if (player.scene.scoreText && player.scene) {
+            animatePointGain(player.scene, player.x, player.y - 20, value);
+            player.scene.scoreText.setText(`Score: ${score}`);
+          if (scoreDingSfx) scoreDingSfx.play();    
+          }
+          }
+        }
+      } else {
+        //reset if not staying above
+        if (platformAboveTime.has(surface.rect)) {
+          platformAboveTime.delete(surface.rect);
+        }
+      }
+    });
+  
+    //reset launch ability if slowed down
     if (player.body.speed < 9) {
       player.body.setVelocity(0, 0);
       canThrow = true;
@@ -918,31 +1150,29 @@ function loadDecorations(scene, decorations) {
   
     updateEyePositions(this);
   
-  //Victory
-  if (!hasWon) {
-    //touching victory platform
-    loadedSurfaces.forEach(surface => {
-      if (surface.rect.isVictory) {
-        if (Phaser.Geom.Intersects.RectangleToRectangle(player.getBounds(), surface.rect.getBounds())) {
-          hasWon = true;
-          handleVictory();
+    //victory condition check
+    if (!hasWon) {
+      // Touching victory platform
+      loadedSurfaces.forEach(surface => {
+        if (surface.rect.isVictory) {
+          if (Phaser.Geom.Intersects.RectangleToRectangle(player.getBounds(), surface.rect.getBounds())) {
+            hasWon = true;
+            handleVictory();
+          }
         }
+      });
+  
+      // Or reaching above the map top
+      if (currentMap && player.y < currentMap.worldBounds.y) {
+        hasWon = true;
+        handleVictory();
       }
-    });
-  
-    //or going above the map top
-    if (currentMap && player.y < currentMap.worldBounds.y) {
-      hasWon = true;
-      handleVictory();
     }
+  
+    // Optional: Future fall-death reset
+    // const groundLevel = currentMap.worldBounds.y + currentMap.worldBounds.height;
   }
   
-
-  //more lenient fall protection - only reset if player falls WAY below the ground
-  if (currentMap) {
-    const groundLevel = currentMap.worldBounds.y + currentMap.worldBounds.height;
-  }
-}
 
 //victory popup
 function handleVictory() {
@@ -951,7 +1181,12 @@ function handleVictory() {
   hasWon = true;
   canThrow = false;
 
-  // Freeze player but NOT input
+  //hide score form scene 
+  if (scene.scoreText && hasWon) {
+    scene.scoreText.setVisible(false);
+  }  
+
+  //freeze player but NOT input
   player.body.setVelocity(0, 0);
   player.body.moves = false;
 
@@ -973,12 +1208,45 @@ function handleVictory() {
       const centerX = scene.scale.width / 2;
       const centerY = scene.scale.height / 2;
 
+      //ensure score includes any final platforms passed but not awarded
+      const currentTime = performance.now();
+      loadedSurfaces.forEach(surface => {
+        if (!surface.rect || passedPlatforms.has(surface.rect)) return;
+
+        const platformY = surface.rect.y;
+        const playerY = player.y;
+
+        if (playerY < platformY - 20) {
+          const firstAbove = platformAboveTime.get(surface.rect);
+          if (!firstAbove || currentTime - firstAbove >=1000) {
+            passedPlatforms.add(surface.rect);
+            const value = platformScores[surface.type] || 0;
+            score += value;
+
+            //update live HUD (optional, since it's victory screen)
+            if (scene.scoreText) {
+              scene.scoreText.setText(`Score: ${score}`);
+            }
+          }
+        }
+      });
+
+      //display final score
+      const scoreText = scene.add.text(centerX, centerY - 140, `- Score: ${score} -`, {
+        fontSize: '28px',
+        fill: '#ffffff',
+        fontFamily: 'Arial',
+        stroke: '#000',
+        strokeThickness: 4.5
+      }).setOrigin(0.5).setScrollFactor(0).setDepth(1001);
+      victoryUI.push(scoreText);
+
+      //congratulation text
       const victoryText = currentLanguage === 'en'
         ? '🎉 BIG CONGRATULATIONS! 🎉\nYou won this map!'
         : '🎉 おめでとうございます！ 🎉\nこのマップをクリアしました！';
-        const title = scene.add.text(centerX, centerY - 60, victoryText, {
-
-        fontSize: '24px',
+      const title = scene.add.text(centerX, centerY - 80, victoryText, {
+        fontSize: '28px',
         fill: '#ffffff',
         fontFamily: 'Arial',
         align: 'center',
@@ -987,6 +1255,7 @@ function handleVictory() {
       }).setOrigin(0.5).setScrollFactor(0).setDepth(1001);
       victoryUI.push(title);
 
+      //menu Button
       const menuLabel = currentLanguage === 'en' ? '[ MENU ]' : '[ メニュー ]';
       const menuBtn = scene.add.text(centerX, centerY + 10, menuLabel, {
         fontSize: '24px',
@@ -996,14 +1265,14 @@ function handleVictory() {
         strokeThickness: 2
       }).setOrigin(0.5).setInteractive({ useHandCursor: true }).setScrollFactor(0).setDepth(1001)
         .on('pointerdown', () => {
-        hasWon = false;
-        togglePause(scene); //open pause menu
-      });
+          hasWon = false;
+          togglePause(scene); //open pause menu
+        });
       victoryUI.push(menuBtn);
 
+      //restart Button
       const restartLabel = currentLanguage === 'en' ? '[RESTART]' : '[ リスタート ]';
       const restartBtn = scene.add.text(centerX, centerY + 50, restartLabel, {
-
         fontSize: '24px',
         fill: '#ffffff',
         fontFamily: 'Arial',
@@ -1015,25 +1284,28 @@ function handleVictory() {
           loadMap(scene, currentMapKey);
         });
       victoryUI.push(restartBtn);
-      
-      const nextLabel = currentLanguage === 'en' ? '[ Next Map ]' : '[ 次のマップ ]';
-    const nextBtn = scene.add.text(centerX, centerY + 90, nextLabel, {
-      fontSize: '24px',
-      fill: '#ffffff',
-      fontFamily: 'Arial',
-      stroke: '#000',
-      strokeThickness: 2
-    }).setOrigin(0.5).setInteractive({ useHandCursor: true }).setScrollFactor(0).setDepth(1000)
-      .on('pointerdown', () => {
-        const idx = MapOrder.indexOf(currentMapKey);
-        if (idx !== -1 && idx < MapOrder.length - 1) {
-          hasWon = false;
-          loadMap(scene, MapOrder[idx + 1]);
-        }
-      });
+
+      //next Map Button
+      const nextLabel = currentLanguage === 'en' ? '[NEXT MAP]' : '[ 次のマップ ]';
+      const nextBtn = scene.add.text(centerX, centerY + 90, nextLabel, {
+        fontSize: '24px',
+        fill: '#ffffff',
+        fontFamily: 'Arial',
+        stroke: '#000',
+        strokeThickness: 2
+      }).setOrigin(0.5).setInteractive({ useHandCursor: true }).setScrollFactor(0).setDepth(1000)
+        .on('pointerdown', () => {
+          const idx = MapOrder.indexOf(currentMapKey);
+          if (idx !== -1 && idx < MapOrder.length - 1) {
+            hasWon = false;
+            loadMap(scene, MapOrder[idx + 1]);
+          }
+        });
       victoryUI.push(nextBtn);
     }
   });
 }
+
+
 
 
