@@ -58,34 +58,33 @@ const MAPS = {
       { type: 'safe', x: 250, y: 150, w: 160, h: 20, color: 0x228B22, bounce: 0.3, friction: 4.0 },
       
       //mixed platforms
-      { type: 'platform', x: 100, y: 0, w: 110, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'platform', x: 140, y: 0, w: 110, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
       { type: 'narrow', x: 450, y: -150, w: 80, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
       { type: 'platform', x: 180, y: -300, w: 100, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
       { type: 'narrow', x: 420, y: -450, w: 75, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
-      { type: 'platform', x: 150, y: -600, w: 110, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
       
       //victory
-      { type: 'victory', x: 250, y: -780, w: 480, h: 25, color: 0xFFD700, bounce: 0.0, friction: 3.0 }
+      { type: 'victory', x: 250, y: -580, w: 480, h: 25, color: 0xFFD700, bounce: 0.0, friction: 3.0 }
     ],
     decorations: [
-      { type: 'text', x: 250, y: -90, text: 'MEDIUM COMPLETE!', style: { fontSize: '24px', fill: '#FFD700' } },
-      { type: 'text', x: 250, y: -840, text: 'Getting better! Try Hard mode!', style: { fontSize: '16px', fill: '#FFD700' } }
+      { type: 'text', x: 250, y: -920, text: 'MEDIUM COMPLETE!', style: { fontSize: '24px', fill: '#FFD700' } },
+      { type: 'text', x: 250, y: -850, text: 'Getting better! Try Hard mode!', style: { fontSize: '16px', fill: '#FFD700' } }
     ]
   },
 
   // LEVEL 3: HARD - Ice platforms, smaller platforms, bouncy sections
   hard: {
     name: "Hard Ascent",
-    worldBounds: { x: 0, y: -2800, width: 500, height: 4300 },
-    playerStart: { x: 250, y: 1400 },
+    worldBounds: { x: 0, y: -2150, width: 500, height: 4300 },
+    playerStart: { x: 250, y: 1200 },
     platforms: [
       //ground Level
-      { type: 'ground', x: 250, y: 1500, w: 500, h: 40, color: 0x654321, bounce: 0.4, friction: 4.0 },
-      { type: 'wall', x: 10, y: -1000, w: 20, h: 4300, color: 0x444444, bounce: 0.4, friction: 0.5 },
-      { type: 'wall', x: 490, y: -1000, w: 20, h: 4300, color: 0x444444, bounce: 0.4, friction: 0.5 },
+      { type: 'ground', x: 250, y: 1700, w: 500, h: 40, color: 0x654321, bounce: 0.4, friction: 4.0 },
+      { type: 'wall', x: 10, y: 100, w: 20, h: 5000, color: 0x444444, bounce: 0.4, friction: 0.5 },
+      { type: 'wall', x: 490, y: 100, w: 20, h: 5000, color: 0x444444, bounce: 0.4, friction: 0.5 },
       
       //quick narrow start
-      { type: 'narrow', x: 180, y: 1350, w: 100, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      { type: 'narrow', x: 130, y: 1450, w: 160, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
       { type: 'narrow', x: 400, y: 1200, w: 90, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
       { type: 'narrow', x: 150, y: 1050, w: 85, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
       
@@ -130,6 +129,7 @@ const MAPS = {
     ],
     decorations: [
       { type: 'text', x: 250, y: -2850, text: 'HARD COMPLETE!', style: { fontSize: '24px', fill: '#FFD700' } },
+      { type: 'text', x: 250, y: 1650, text: '!!!UNDER DEVELOPMENT!!!', style: { fontSize: '28px', fill: '#FFD700' } },
       { type: 'text', x: 250, y: -2820, text: 'Impressive! Ready for Extreme?', style: { fontSize: '16px', fill: '#FFD700' } }
     ]
   },
@@ -141,9 +141,9 @@ const MAPS = {
     playerStart: { x: 250, y: 1400 },
     platforms: [
       //ground Level
-      { type: 'ground', x: 250, y: 1500, w: 500, h: 40, color: 0x654321, bounce: 0.4, friction: 4.0 },
-      { type: 'wall', x: 10, y: -1200, w: 20, h: 4700, color: 0x444444, bounce: 0.4, friction: 0.5 },
-      { type: 'wall', x: 490, y: -1200, w: 20, h: 4700, color: 0x444444, bounce: 0.4, friction: 0.5 },
+      { type: 'ground', x: 250, y: 1450, w: 500, h: 40, color: 0x654321, bounce: 0.4, friction: 4.0 },
+      { type: 'wall', x: 10, y: -600, w: 20, h: 4700, color: 0x444444, bounce: 0.4, friction: 0.5 },
+      { type: 'wall', x: 490, y: -600, w: 20, h: 4700, color: 0x444444, bounce: 0.4, friction: 0.5 },
       
       //immediate challenge
       { type: 'tiny', x: 180, y: 1350, w: 60, h: 12, color: 0xff6b6b, bounce: 0.1, friction: 3.5 },
@@ -194,6 +194,7 @@ const MAPS = {
     ],
     decorations: [
       { type: 'text', x: 250, y: -3250, text: 'EXTREME COMPLETE!', style: { fontSize: '24px', fill: '#FFD700' } },
+      { type: 'text', x: 250, y: 1250, text: '!!!UNDER DEVELOPMENT!!!', style: { fontSize: '28px', fill: '#FFD700' } },
       { type: 'text', x: 250, y: -3220, text: 'You are truly skilled! Try Fling Tower!', style: { fontSize: '16px', fill: '#FFD700' } }
     ]
   },
@@ -397,7 +398,7 @@ function preload() {
   scene.tweens.add({
     targets: progressBar,
     width: 250,
-    duration: 2000,
+    duration: 500,
     ease: 'Linear',
     onComplete: () => {
       // Clean up loading visuals
