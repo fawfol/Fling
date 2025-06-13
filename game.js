@@ -24,9 +24,7 @@ const MAPS = {
       { type: 'platform', x: 360, y: 150, w: 160, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
       { type: 'platform', x: 180, y: 0, w: 140, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
       
-      //rest platforms
-      { type: 'safe', x: 350, y: -150, w: 180, h: 20, color: 0x228B22, bounce: 0.3, friction: 4.0 },
-            //victory
+      //victory
       { type: 'victory', x: 250, y: -320, w: 500, h: 25, color: 0xFFD700, bounce: 0.0, friction: 3.0 }
     ],
     decorations: [
@@ -38,13 +36,13 @@ const MAPS = {
   // LEVEL 2: MEDIUM - Some narrow platforms, longer jumps
   medium: {
     name: "Medium Challenge",
-    worldBounds: { x: 0, y: -2200, width: 500, height: 3700 },
+    worldBounds: { x: 0, y: -2150, width: 500, height: 3700 },
     playerStart: { x: 250, y: 1400 },
     platforms: [
       //ground Level
       { type: 'ground', x: 250, y: 1500, w: 500, h: 40, color: 0x654321, bounce: 0.4, friction: 4.0 },
-      { type: 'wall', x: 10, y: -500, w: 20, h: 3700, color: 0x444444, bounce: 0.4, friction: 0.5 },
-      { type: 'wall', x: 490, y: -500, w: 20, h: 3700, color: 0x444444, bounce: 0.4, friction: 0.5 },
+      { type: 'wall', x: 10, y: 100, w: 20, h: 3700, color: 0x444444, bounce: 0.4, friction: 0.5 },
+      { type: 'wall', x: 490, y: 100, w: 20, h: 3700, color: 0x444444, bounce: 0.4, friction: 0.5 },
       
       //starting section - still forgiving
       { type: 'platform', x: 150, y: 1350, w: 130, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
@@ -68,21 +66,12 @@ const MAPS = {
       { type: 'narrow', x: 420, y: -450, w: 75, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
       { type: 'platform', x: 150, y: -600, w: 110, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
       
-      //some bouncy fun
-      { type: 'bouncy', x: 400, y: -750, w: 90, h: 15, color: 0x00ff00, bounce: 0.7, friction: 2.2 },
-      { type: 'bouncy', x: 120, y: -900, w: 85, h: 15, color: 0x00ff00, bounce: 0.7, friction: 2.2 },
-      { type: 'platform', x: 350, y: -1050, w: 100, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
-      
-      //final section
-      { type: 'narrow', x: 180, y: -1200, w: 90, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
-      { type: 'narrow', x: 450, y: -1350, w: 75, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
-      
       //victory
-      { type: 'victory', x: 250, y: -1500, w: 500, h: 25, color: 0xFFD700, bounce: 0.0, friction: 3.0 }
+      { type: 'victory', x: 250, y: -780, w: 480, h: 25, color: 0xFFD700, bounce: 0.0, friction: 3.0 }
     ],
     decorations: [
-      { type: 'text', x: 250, y: -1850, text: 'MEDIUM COMPLETE!', style: { fontSize: '24px', fill: '#FFD700' } },
-      { type: 'text', x: 250, y: -1750, text: 'Getting better! Try Hard mode!', style: { fontSize: '16px', fill: '#FFD700' } }
+      { type: 'text', x: 250, y: -90, text: 'MEDIUM COMPLETE!', style: { fontSize: '24px', fill: '#FFD700' } },
+      { type: 'text', x: 250, y: -840, text: 'Getting better! Try Hard mode!', style: { fontSize: '16px', fill: '#FFD700' } }
     ]
   },
 
@@ -384,13 +373,14 @@ let needleTween;
 
 let leftEyebrow, rightEyebrow;
 
+let wasOnGround = false;
+
 let currentMapKey = null;//map name hold
 
 //menus option and state
 let isPaused = false;
 let pauseButton;
 let pauseOverlay;
-
 
 const game = new Phaser.Game(config);
 
@@ -608,11 +598,10 @@ function setupUI(scene) {
     }
 
     //reload map to update decorations
-    if (currentMap === MAPS.tutorial) {
-      loadMap(scene, 'tutorial');
-    } else if (currentMap === MAPS.fling) {
-      loadMap(scene, 'fling');
+    if (currentMapKey) {
+      loadMap(scene, currentMapKey);
     }
+    
   }); 
 }
 
@@ -640,12 +629,10 @@ function setupPlayer(scene) {
   //eyebrows
   //left eyebrow (above left pupil, 11 o'clock arc)
   leftEyebrow = scene.add.graphics().setDepth(5);
-leftEyebrow.lineStyle(2, 0x000000, 1);
-leftEyebrow.beginPath();
-leftEyebrow.arc(0, 0, 6, Phaser.Math.DegToRad(300), Phaser.Math.DegToRad(70), true);
-leftEyebrow.strokePath();
-
-
+  leftEyebrow.lineStyle(2, 0x000000, 1);
+  leftEyebrow.beginPath();
+  leftEyebrow.arc(0, 0, 6, Phaser.Math.DegToRad(300), Phaser.Math.DegToRad(70), true);
+  leftEyebrow.strokePath();
 
   //right eyebrow (above right pupil, 1 o'clock arc)
   rightEyebrow = scene.add.graphics().setDepth(5);
@@ -653,9 +640,6 @@ leftEyebrow.strokePath();
   rightEyebrow.beginPath();
   rightEyebrow.arc(0, 0, 6, Phaser.Math.DegToRad(20), Phaser.Math.DegToRad(200), true); // ⮕ CLOCKWISE
   rightEyebrow.strokePath();
-  
-
-    
 
   //unitialize direction vector pointing upward
   directionVector = new Phaser.Math.Vector2(0, -1);
@@ -760,6 +744,10 @@ function updateEyePositions(scene) {
 }
 
 function loadMap(scene, mapName) {
+    hasWon = false;
+    canThrow = true;
+    wasOnGround = false;
+    player.body.moves = true;
 
     console.log(`Loading map: ${mapName}`);
   
@@ -905,7 +893,7 @@ function loadDecorations(scene, decorations) {
   //Player physics
   function update() {
     const onGround = player.body.blocked.down || player.body.touching.down;
-  
+
     //air control
     if (!onGround) {
       player.body.setVelocity(
