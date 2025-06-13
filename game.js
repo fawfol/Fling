@@ -384,6 +384,8 @@ let currentTrack = null;
 let jumpSfx;
 let loadingHum;
 let scoreDingSfx;
+let victorySfx;
+
 
 
 //game state
@@ -518,7 +520,7 @@ const tipTimer = this.time.addEvent({
   }
   this.load.audio('jumpSound', 'assets/SoundEffects/8bitJump.mp3');
   this.load.audio('scoreDing', 'assets/SoundEffects/point.mp3');
-
+  this.load.audio('victorySound', 'assets/SoundEffects/victorysound.mp3')
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -528,8 +530,11 @@ function create() {
   for (let i = 1; i <= 16; i++) {
     lofiTracks.push(this.sound.add(`lofi${i}`, { volume: 0.6 }));
   }
+
+  victorySfx = this.sound.add('victorySound', { volume: 0.6 });
+
   jumpSfx = this.sound.add('jumpSound', { volume: 0.13 });
-  scoreDingSfx = this.sound.add('scoreDing', { volume: 0.3 });
+  scoreDingSfx = this.sound.add('scoreDing', { volume: 0.3});
 
 
   playNextTrack(this);
@@ -1141,7 +1146,7 @@ function loadDecorations(scene, decorations) {
             passedPlatforms.add(surface.rect);
             const value = platformScores[surface.type] || 0;
             score += value;
-            scoreDingSfx.play();    
+            if(scoreDingSfx) scoreDingSfx.play();    
 
           if (player.scene.scoreText && player.scene) {
             animatePointGain(player.scene, player.x, player.y - 20, value);
@@ -1199,6 +1204,8 @@ function handleVictory() {
   const scene = player.scene;
   hasWon = true;
   canThrow = false;
+  if (victorySfx) victorySfx.play();
+
 
   //hide score form scene 
   if (scene.scoreText && hasWon) {
