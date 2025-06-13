@@ -421,12 +421,6 @@ function preload() {
       loadingText.destroy();
       progressBox.destroy();
       progressBar.destroy();
-
-      // Start game
-      setupUI(scene);
-      setupPlayer(scene);
-      setupInput(scene);
-      loadMap(scene, 'tutorial');
     }
   });
 
