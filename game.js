@@ -529,7 +529,7 @@ function create() {
     lofiTracks.push(this.sound.add(`lofi${i}`, { volume: 0.6 }));
   }
   jumpSfx = this.sound.add('jumpSound', { volume: 0.13 });
-  scoreDingSfx = this.sound.add('scoreDing', { volume: 0.1 });
+  scoreDingSfx = this.sound.add('scoreDing', { volume: 0.13 });
 
 
   playNextTrack(this);
@@ -563,28 +563,42 @@ function playNextTrack(scene) {
 }
 
 //score add animation
+// 
 function animatePointGain(scene, startX, startY, amount) {
-  const floatText = scene.add.text(startX, startY, `+${amount}`, {
-    fontSize: '24px',
+  const scoreX = scene.scoreText.x;
+  const scoreY = scene.scoreText.y;
+
+  const floatText = scene.add.text(scoreX, scoreY + 32, `+${amount}`, {
+    fontSize: '28px',
     fill: '#00ff00',
     fontFamily: 'Arial',
     stroke: '#000',
     strokeThickness: 3
-  }).setOrigin(0.5).setDepth(999);
+  })
+  .setOrigin(0.5)
+  .setScale(0)
+  .setAlpha(0)
+  .setDepth(1000)
+  .setScrollFactor(0);
 
-  floatText.setScale(0);
-
-  const targetX = scene.scale.width / 2;
-  const targetY = 10;
+  // animation: scale in, fade in, move up, fade out
+  scene.tweens.add({
+    targets: floatText,
+    y: scoreY + 45,
+    alpha: 1,
+    scaleX: 1,
+    scaleY: 1,
+    ease: 'Back.Out',
+    duration: 300
+  });
 
   scene.tweens.add({
     targets: floatText,
-    x: targetX,
-    y: targetY,
-    scaleX: 1,
-    scaleY: 1,
-    duration: 800,
-    ease: 'Power2',
+    y: scoreY - 10,
+    alpha: 0,
+    delay: 600,
+    duration: 400,
+    ease: 'Quad.easeIn',
     onComplete: () => floatText.destroy()
   });
 }
@@ -684,6 +698,22 @@ function textStyle() {
     stroke: '#000',
     strokeThickness: 3
   };
+}
+
+
+//clear map
+function clearCurrentMap(scene) {
+  //clear surfaces
+  loadedSurfaces.forEach(surface => {
+    if (surface.rect) surface.rect.destroy();
+  });
+  loadedSurfaces = [];
+
+  //clear decorations
+  loadedDecorations.forEach(decoration => {
+    if (decoration.object) decoration.object.destroy();
+  });
+  loadedDecorations = [];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -932,6 +962,8 @@ function updateEyePositions(scene) {
   
 }
 
+
+
 function loadMap(scene, mapName) {
     
     score = 0;
@@ -1016,19 +1048,6 @@ function loadMap(scene, mapName) {
   console.log(`Map '${mapData.name}' loaded successfully!`);
 }
 
-function clearCurrentMap(scene) {
-  //clear surfaces
-  loadedSurfaces.forEach(surface => {
-    if (surface.rect) surface.rect.destroy();
-  });
-  loadedSurfaces = [];
-
-  //clear decorations
-  loadedDecorations.forEach(decoration => {
-    if (decoration.object) decoration.object.destroy();
-  });
-  loadedDecorations = [];
-}
 
 function loadBackground(scene, mapData) {
   //add background based on map height
@@ -1122,11 +1141,11 @@ function loadDecorations(scene, decorations) {
             passedPlatforms.add(surface.rect);
             const value = platformScores[surface.type] || 0;
             score += value;
+            scoreDingSfx.play();    
 
           if (player.scene.scoreText && player.scene) {
             animatePointGain(player.scene, player.x, player.y - 20, value);
             player.scene.scoreText.setText(`Score: ${score}`);
-          if (scoreDingSfx) scoreDingSfx.play();    
           }
           }
         }
