@@ -13,7 +13,7 @@ const MAPS = {
       
       //easy climb with wide platforms
       { type: 'platform', x: 110, y: 1350, w: 167, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
-      { type: 'platform', x: 360, y: 1200, w: 160, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'platform', x: 370, y: 1200, w: 160, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
       { type: 'platform', x: 130, y: 1050, w: 150, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
       { type: 'platform', x: 380, y: 900, w: 150, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
       { type: 'platform', x: 250, y: 750, w: 180, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
@@ -21,7 +21,7 @@ const MAPS = {
       { type: 'platform', x: 120, y: 600, w: 140, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
       { type: 'platform', x: 380, y: 450, w: 140, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
       { type: 'platform', x: 200, y: 300, w: 160, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
-      { type: 'platform', x: 300, y: 150, w: 160, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'platform', x: 360, y: 150, w: 160, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
       { type: 'platform', x: 180, y: 0, w: 140, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
       
       //rest platforms
@@ -30,8 +30,8 @@ const MAPS = {
       { type: 'victory', x: 250, y: -320, w: 500, h: 25, color: 0xFFD700, bounce: 0.0, friction: 3.0 }
     ],
     decorations: [
-      { type: 'text', x: 250, y: -345, text: 'EASY COMPLETE!', style: { fontSize: '24px', fill: '#FFD700' } },
-      { type: 'text', x: 250, y: -330, text: 'Nice job! Try Medium next!', style: { fontSize: '16px', fill: '#FFD700' } }
+      { type: 'text', x: 250, y: -390, text: 'EASY COMPLETE!', style: { fontSize: '24px', fill: '#FFD700' } },
+      { type: 'text', x: 250, y: -360, text: 'Nice job! Try Medium next!', style: { fontSize: '16px', fill: '#FFD700' } }
     ]
   },
 
@@ -76,18 +76,13 @@ const MAPS = {
       //final section
       { type: 'narrow', x: 180, y: -1200, w: 90, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
       { type: 'narrow', x: 450, y: -1350, w: 75, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
-      { type: 'platform', x: 200, y: -1500, w: 100, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
-      { type: 'narrow', x: 400, y: -1650, w: 80, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
-      { type: 'platform', x: 150, y: -1800, w: 120, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
-      { type: 'narrow', x: 420, y: -1950, w: 70, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
-      { type: 'platform', x: 200, y: -2100, w: 110, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
       
       //victory
-      { type: 'victory', x: 250, y: -2200, w: 180, h: 25, color: 0xFFD700, bounce: 0.0, friction: 3.0 }
+      { type: 'victory', x: 250, y: -1500, w: 500, h: 25, color: 0xFFD700, bounce: 0.0, friction: 3.0 }
     ],
     decorations: [
-      { type: 'text', x: 250, y: -2250, text: 'MEDIUM COMPLETE!', style: { fontSize: '24px', fill: '#FFD700' } },
-      { type: 'text', x: 250, y: -2220, text: 'Getting better! Try Hard mode!', style: { fontSize: '16px', fill: '#FFD700' } }
+      { type: 'text', x: 250, y: -1850, text: 'MEDIUM COMPLETE!', style: { fontSize: '24px', fill: '#FFD700' } },
+      { type: 'text', x: 250, y: -1750, text: 'Getting better! Try Hard mode!', style: { fontSize: '16px', fill: '#FFD700' } }
     ]
   },
 
