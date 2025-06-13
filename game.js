@@ -30,8 +30,8 @@ const MAPS = {
       { type: 'victory', x: 250, y: -320, w: 500, h: 25, color: 0xFFD700, bounce: 0.0, friction: 3.0 }
     ],
     decorations: [
-      { type: 'text', x: 250, y: 100, text: 'EASY COMPLETE!', style: { fontSize: '24px', fill: '#FFD700' } },
-      { type: 'text', x: 250, y: -1520, text: 'Nice job! Try Medium next!', style: { fontSize: '16px', fill: '#FFD700' } }
+      { type: 'text', x: 250, y: -345, text: 'EASY COMPLETE!', style: { fontSize: '24px', fill: '#FFD700' } },
+      { type: 'text', x: 250, y: -330, text: 'Nice job! Try Medium next!', style: { fontSize: '16px', fill: '#FFD700' } }
     ]
   },
 
@@ -399,59 +399,49 @@ let pauseOverlay;
 
 const game = new Phaser.Game(config);
 
+//preload screen and preload assets
 function preload() {
   const scene = this;
 
-  // Loading UI
-  const loadingText = scene.add.text(
-    scene.scale.width / 2, scene.scale.height / 2,
-    'Loading...',
-    { fontSize: '24px', fill: '#ffffff', fontFamily: 'Arial' }
-  ).setOrigin(0.5).setScrollFactor(0);
+  const loadingText = scene.add.text(scene.scale.width / 2, scene.scale.height / 2 - 50, 'Loading...', {
+    fontSize: '24px', fill: '#ffffff', fontFamily: 'Arial'
+  }).setOrigin(0.5);
 
   const progressBox = scene.add.rectangle(scene.scale.width / 2, scene.scale.height / 2 + 40, 300, 25, 0x222222).setOrigin(0.5);
   const progressBar = scene.add.rectangle(scene.scale.width / 2 - 150, scene.scale.height / 2 + 40, 0, 25, 0xffffff).setOrigin(0, 0.5);
 
-  let loadComplete = false;
-  let minDelayPassed = false;
-
-  scene.load.on('progress', (value) => {
-    progressBar.width = 300 * value;
-  });
-
-  // When assets are done loading
-  scene.load.on('complete', () => {
-    loadComplete = true;
-    maybeContinue();
-  });
-
-  // 2 second delay using Phaser timer
-  scene.time.delayedCall(2000, () => {
-    minDelayPassed = true;
-    maybeContinue();
-  });
-
-  function maybeContinue() {
-    if (loadComplete && minDelayPassed) {
+  // Animate the progress bar manually from 0 to full over 2 seconds
+  scene.tweens.add({
+    targets: progressBar,
+    width: 250,
+    duration: 2000,
+    ease: 'Linear',
+    onComplete: () => {
+      // Clean up loading visuals
       loadingText.destroy();
-      progressBar.destroy();
       progressBox.destroy();
-      console.log('Loading screen finished');
-    }
-  }
+      progressBar.destroy();
 
-  // Load your assets
+      // Start game
+      setupUI(scene);
+      setupPlayer(scene);
+      setupInput(scene);
+      loadMap(scene, 'tutorial');
+    }
+  });
+
+  // Load your assets (they’ll be ready quickly)
   scene.load.image('forestBase', 'assets/8bit-jungle.jpg');
+  // You can load more assets here too
 }
 
 
 function create() {
-  setupUI(this);
-  setupPlayer(this);
-  setupInput(this);
-
-  //laoad the default map
-  loadMap(this, 'tutorial');
+    // Code to run after 2 seconds
+    setupUI(this);
+    setupPlayer(this);
+    setupInput(this);
+    loadMap(this, 'tutorial');
 }
 
 //toggle pause and menu
