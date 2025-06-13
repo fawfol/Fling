@@ -534,7 +534,7 @@ function create() {
   victorySfx = this.sound.add('victorySound', { volume: 0.6 });
 
   jumpSfx = this.sound.add('jumpSound', { volume: 0.13 });
-  scoreDingSfx = this.sound.add('scoreDing', { volume: 0.3});
+  scoreDingSfx = this.sound.add('scoreDing', { volume: 0.5});
 
 
   playNextTrack(this);
