@@ -1,16 +1,16 @@
 //map definitions - separated from game logic
 const MapOrder = ['tutorial', 'easy', 'medium', 'hard', 'extreme', 'fling'];
 const platformScores = {
-  platform: 4,
-  narrow: 5,
-  tiny: 6,
-  ice: 7,
-  bouncy: 4,
-  super_bouncy: 8,
-  safe: 1,
-  ground: 0,
-  wall: 0,
-  victory: 10 // optional reward
+  platform: 10,
+  narrow: 15,
+  tiny: 20,
+  ice: 25,
+  bouncy: 20,
+  super_bouncy: 25,
+  safe: 10,
+  ground: null,
+  wall: null,
+  victory: 40 // optional reward
 };
 
 let score = 0;
@@ -386,6 +386,11 @@ let loadingHum;
 let scoreDingSfx;
 let victorySfx;
 
+//time duration
+let startTime;
+let elapsedTime = 0;
+let timeText;
+let gameEnded = false;
 
 
 //game state
@@ -608,8 +613,10 @@ function animatePointGain(scene, startX, startY, amount) {
   });
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////toggle pause and menu/////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//toggle pause and menu
 function togglePause(scene) {
   isPaused = !isPaused;
 
@@ -723,7 +730,7 @@ function clearCurrentMap(scene) {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////SET UP FUNCTIONS/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////SET UP GAME FUNCTIONS/////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function setupUI(scene) {
@@ -1146,12 +1153,13 @@ function loadDecorations(scene, decorations) {
             passedPlatforms.add(surface.rect);
             const value = platformScores[surface.type] || 0;
             score += value;
-            if(scoreDingSfx) scoreDingSfx.play();    
 
-          if (player.scene.scoreText && player.scene) {
-            animatePointGain(player.scene, player.x, player.y - 20, value);
-            player.scene.scoreText.setText(`Score: ${score}`);
-          }
+            if (player.scene.scoreText && player.scene && value!=0) {
+              // play ding sound and score add animation
+              if(scoreDingSfx) scoreDingSfx.play();    
+              animatePointGain(player.scene, player.x, player.y - 20, value);
+              player.scene.scoreText.setText(`Score: ${score}`);
+            }
           }
         }
       } else {
@@ -1331,7 +1339,3 @@ function handleVictory() {
     }
   });
 }
-
-
-
-
