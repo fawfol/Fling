@@ -2,15 +2,15 @@
 const MapOrder = ['tutorial', 'easy', 'medium', 'hard', 'extreme', 'fling'];
 const platformScores = {
   platform: 10,
-  narrow: 15,
-  tiny: 20,
-  ice: 25,
-  bouncy: 20,
-  super_bouncy: 25,
-  safe: 10,
+  narrow: 20,
+  tiny: 30,
+  ice: 35,
+  bouncy: 30,
+  super_bouncy: 35,
+  safe: 50,
   ground: null,
   wall: null,
-  victory: 40 // optional reward
+  victory: 100 // optional reward
 };
 
 let score = 0;
@@ -1266,7 +1266,7 @@ function handleVictory() {
       });
 
       //display final score
-      const scoreText = scene.add.text(centerX, centerY - 140, `- Score: ${score} -`, {
+      const scoreText = scene.add.text(centerX, centerY - 170, `- Score: ${score} -`, {
         fontSize: '28px',
         fill: '#ffffff',
         fontFamily: 'Arial',
