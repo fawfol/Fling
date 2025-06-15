@@ -526,7 +526,7 @@ const tipTimer = this.time.addEvent({
   this.load.image('forestBase', 'assets/images/8bit-jungle.jpg');
 
   //audios load/////////////////////////////////////////////////
-  for (let i = 1; i <= 1; i++) {
+  for (let i = 1; i <= 3; i++) {
     this.load.audio(`lofi${i}`, `assets/musics/lofi${i}.mp3`);
   }
   this.load.audio('jumpSound', 'assets/SoundEffects/8bitJump.mp3');
@@ -538,7 +538,7 @@ const tipTimer = this.time.addEvent({
 ////////////////////////////////////////////CREATE SECTION////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function create() {
-  for (let i = 1; i <= 1; i++) {
+  for (let i = 1; i <= 3; i++) {
     lofiTracks.push(this.sound.add(`lofi${i}`, { volume: 0.6 }));
   }
 
