@@ -10,7 +10,7 @@ const platformScores = {
   safe: 50,
   ground: null,
   wall: null,
-  victory: 100 // optional reward
+  victory: 100
 };
 
 let score = 0;
@@ -391,6 +391,12 @@ let startTime;
 let elapsedTime = 0;
 let timeText;
 let gameEnded = false;
+let gameTimer = 0;
+let timerEvent;
+let jumpCountText;
+let timerText;
+let gameOverOverlay;
+let gameOverText;
 
 
 //game state
@@ -520,7 +526,7 @@ const tipTimer = this.time.addEvent({
   this.load.image('forestBase', 'assets/images/8bit-jungle.jpg');
 
   //audios load/////////////////////////////////////////////////
-  for (let i = 1; i <= 16; i++) {
+  for (let i = 1; i <= 1; i++) {
     this.load.audio(`lofi${i}`, `assets/musics/lofi${i}.mp3`);
   }
   this.load.audio('jumpSound', 'assets/SoundEffects/8bitJump.mp3');
@@ -532,12 +538,11 @@ const tipTimer = this.time.addEvent({
 ////////////////////////////////////////////CREATE SECTION////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function create() {
-  for (let i = 1; i <= 16; i++) {
+  for (let i = 1; i <= 1; i++) {
     lofiTracks.push(this.sound.add(`lofi${i}`, { volume: 0.6 }));
   }
 
   victorySfx = this.sound.add('victorySound', { volume: 0.6 });
-
   jumpSfx = this.sound.add('jumpSound', { volume: 0.13 });
   scoreDingSfx = this.sound.add('scoreDing', { volume: 0.5});
 
@@ -547,7 +552,66 @@ function create() {
   setupPlayer(this);
   setupInput(this);
   loadMap(this, 'tutorial');
+
+  const centerX = this.cameras.main.width / 2;
+  const centerY = this.cameras.main.height / 2;
+
+  //UI: Jump Count
+  jumpCountText = this.add.text(25, this.cameras.main.height - 40, `JUMPS: 0`, {
+    fontSize: '20px',
+    fill: '#ffffff',
+    fontFamily: 'Arial',
+    stroke: '#000',
+    strokeThickness: 2
+  }).setScrollFactor(0).setDepth(1000);
+
+
+  //UI: Timer
+  timerText = this.add.text(this.cameras.main.width - 25, this.cameras.main.height - 40, `TIMER: 0s`, {
+    fontSize: '20px',
+    fill: '#ffffff',
+    fontFamily: 'Arial',
+    stroke: '#000',
+    strokeThickness: 2
+  }).setOrigin(1, 0).setScrollFactor(0).setDepth(1000);
+
+  /* //UI: Times Up screen (initially hidden)
+  gameOverOverlay = this.add.rectangle(centerX, centerY, this.cameras.main.width, this.cameras.main.height, 0x333333, 0.8)
+    .setScrollFactor(0).setDepth(2000).setVisible(false).setInteractive();
+
+  gameOverText = this.add.text(centerX, centerY, 'OOPS! \n 😭 TIMES UP 😭', {
+    fontSize: '36px',
+    fill: '#ffffff',
+    fontFamily: 'Arial',
+    stroke: '#000',
+    strokeThickness: 4,
+    align: 'center'
+  }).setOrigin(0.5).setScrollFactor(0).setDepth(2001).setVisible(false);
+
+  gameOverOverlay.on('pointerdown', () => {
+    gameOverOverlay.setVisible(false);
+    gameOverText.setVisible(false);
+    togglePause(this); // go to pause/menu
+  });
+ */
+  //start the game timer
+  timerEvent = this.time.addEvent({
+    delay: 1000,
+    loop: true,
+    callback: () => {
+      if (hasWon || isPaused) return;
+      gameTimer++;
+      timerText.setText(`TIMER: ${gameTimer}s`);
+
+      if (gameTimer >= 999) {
+        timerEvent.remove();
+        /* endGameDueToTime(this); */
+      }
+    }
+  });
 }
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -556,6 +620,24 @@ function create() {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////HELPER FUNCTIONS////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//resetter
+
+function resetGameStats(scene) {
+  gameTimer = 0;
+  jumpCount = 0;
+  score = 0;
+  passedPlatforms.clear();
+  platformAboveTime.clear();
+  hasWon = false;
+  canThrow = true;
+  wasOnGround = false;
+
+  if (jumpCountText) jumpCountText.setText(`JUMPS: 0`);
+  if (timerText) timerText.setText(`TIMER: 0s`);
+  if (scene.scoreText) scene.scoreText.setText('Score: 0');
+}
+
 
 //music player func
 function playNextTrack(scene) {
@@ -887,17 +969,16 @@ function setupInput(scene) {
   // On pointer down (click or tap), trigger jump with direction based on input type
   scene.input.on('pointerdown', pointer => {
     const tapY = pointer.y;
-
+  
     if (tapY < 70 || tapY > scene.scale.height - 100) {
       return;
     }
-  
+    
     if (!canThrow) return;
     canThrow = false;
     jumpCount++;
-  
     let jumpDirection;
-  
+
     if (scene.sys.game.device.input.touch) {
       const worldPoint = pointer.positionToCamera(scene.cameras.main);
       jumpDirection = new Phaser.Math.Vector2(
@@ -912,6 +993,7 @@ function setupInput(scene) {
       jumpDirection.x * 300 * powerLevel,
       jumpDirection.y * 800 * powerLevel
     );
+    jumpCountText.setText(`JUMPS: ${jumpCount}`);
     jumpSfx.play();
   });
 }
@@ -974,20 +1056,14 @@ function updateEyePositions(scene) {
   
 }
 
-
-
 function loadMap(scene, mapName) {
     
-    score = 0;
-    jumpCount = 0;
-    passedPlatforms.clear();
-    platformAboveTime.clear();
+  
+  //reseter
+  resetGameStats(scene);
+
     scene.scoreText.setVisible(true);
     scene.scoreText.setText('Score: 0');
-  
-    hasWon = false;
-    canThrow = true;
-    wasOnGround = false;
     player.body.moves = true;
 
     console.log(`Loading map: ${mapName}`);
@@ -1083,9 +1159,10 @@ function loadPlatforms(scene, platforms) {
     scene.physics.add.collider(player, rect);
     
 
-  if (platform.type === 'victory') {
-    rect.isVictory = true;
-  }
+    if (platform.type === 'victory') {
+      rect.isVictory = true;
+      }
+      
 
     loadedSurfaces.push({
       rect,
@@ -1119,7 +1196,9 @@ function loadDecorations(scene, decorations) {
 
 //loop
   //Player physics
-  function update() {
+  function update(time, delta) {
+    const scene = this;
+    if(!player || !player.body) return;
     const onGround = player.body.blocked.down || player.body.touching.down;
   
     // Air control
@@ -1152,7 +1231,7 @@ function loadDecorations(scene, decorations) {
           if (currentTime - firstAbove >= 1000) {
             passedPlatforms.add(surface.rect);
             const value = platformScores[surface.type] || 0;
-            score += value;
+            score += (value - jumpCount);
 
             if (player.scene.scoreText && player.scene && value!=0) {
               // play ding sound and score add animation
@@ -1266,7 +1345,7 @@ function handleVictory() {
       });
 
       //display final score
-      const scoreText = scene.add.text(centerX, centerY - 170, `- Score: ${score} -`, {
+      const scoreText = scene.add.text(centerX, centerY - 170, `- Score : ${score} -`, {
         fontSize: '28px',
         fill: '#ffffff',
         fontFamily: 'Arial',
@@ -1275,13 +1354,33 @@ function handleVictory() {
       }).setOrigin(0.5).setScrollFactor(0).setDepth(1001);
       victoryUI.push(scoreText);
 
+      // -jumps from score
+      const jumpVictoryText = scene.add.text(centerX + 80, centerY - 220, `- ${jumpCount} Jumps`, {
+        fontSize: '24px',
+        fill: '#ff6666',
+        fontFamily: 'Arial',
+        stroke: '#000',
+        strokeThickness: 3
+      }).setOrigin(0.5).setScrollFactor(0).setDepth(1001);
+      victoryUI.push(jumpVictoryText);
+
+      //timer on victory
+      const timerVictoryText = scene.add.text(centerX - 80, centerY - 220, `Timer : ${gameTimer}s `, {
+        fontSize: '24px',
+        fill: '#0fff0f',
+        fontFamily: 'Arial',
+        stroke: '#000',
+        strokeThickness: 3
+      }).setOrigin(0.5).setScrollFactor(0).setDepth(1001);
+      victoryUI.push(timerVictoryText);
+ 
       //congratulation text
       const victoryText = currentLanguage === 'en'
         ? '🎉 BIG CONGRATULATIONS! 🎉\nYou won this map!'
         : '🎉 おめでとうございます！ 🎉\nこのマップをクリアしました！';
       const title = scene.add.text(centerX, centerY - 80, victoryText, {
         fontSize: '28px',
-        fill: '#ffffff',
+        fill: '#00ff0f',
         fontFamily: 'Arial',
         align: 'center',
         stroke: '#000',
