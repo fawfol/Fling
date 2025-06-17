@@ -526,7 +526,7 @@ const tipTimer = this.time.addEvent({
   this.load.image('forestBase', 'assets/images/8bit-jungle.jpg');
 
   //audios load/////////////////////////////////////////////////
-  for (let i = 1; i <= 3; i++) {
+  for (let i = 1; i <= 16; i++) {
     this.load.audio(`lofi${i}`, `assets/musics/lofi${i}.mp3`);
   }
   this.load.audio('jumpSound', 'assets/SoundEffects/8bitJump.mp3');
@@ -538,7 +538,7 @@ const tipTimer = this.time.addEvent({
 ////////////////////////////////////////////CREATE SECTION////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function create() {
-  for (let i = 1; i <= 3; i++) {
+  for (let i = 1; i <= 16; i++) {
     lofiTracks.push(this.sound.add(`lofi${i}`, { volume: 0.6 }));
   }
 
@@ -633,9 +633,9 @@ function resetGameStats(scene) {
   canThrow = true;
   wasOnGround = false;
 
-  if (jumpCountText) jumpCountText.setText(`JUMPS: 0`);
-  if (timerText) timerText.setText(`TIMER: 0s`);
-  if (scene.scoreText) scene.scoreText.setText('Score: 0');
+  if (jumpCountText) currentLanguage === 'en'?jumpCountText.setText(`JUMPS: 0`):jumpCountText.setText(`ジャンプ: 0`);
+  if (timerText) currentLanguage === 'en' ? timerText.setText(`TIMER: 0s`):timerText.setText(`時間: 0`);
+  if (scene.scoreText) currentLanguage === 'en' ?  scene.scoreText.setText('Score: 0') : scene.scoreText.setText('スコア:0');
 }
 
 
@@ -1287,6 +1287,18 @@ function loadDecorations(scene, decorations) {
 
 //victory popup
 function handleVictory() {
+
+  //Server score submit
+  fetch('https://www.tenzinkalsang.site/modular-index/Fling/submit_score.php', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    score: score,
+    timer: Math.floor(gameTimer),
+    jumps: jumpCount
+  })});
+    
+    
   console.log("🎉 Victory!");
   const scene = player.scene;
   hasWon = true;
