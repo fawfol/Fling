@@ -1,3 +1,9 @@
+//system language retrieve
+// Language detection (global)
+const userLang = (navigator.language || navigator.userLanguage).toLowerCase();
+window.currentLanguage = userLang.startsWith('ja') ? 'jp' : 'en';
+
+
 //map definitions - separated from game logic
 const MapOrder = ['tutorial', 'easy', 'medium', 'hard', 'extreme', 'fling'];
 const platformScores = {
