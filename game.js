@@ -1295,7 +1295,8 @@ function handleVictory() {
   body: JSON.stringify({
     score: score,
     timer: Math.floor(gameTimer),
-    jumps: jumpCount
+    jumps: jumpCount,
+    map: currentMapKey
   })});
     
     
