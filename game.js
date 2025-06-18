@@ -38,13 +38,11 @@ const MAPS = {
       
       //easy climb with wide platforms
       { type: 'platform', x: 110, y: 1350, w: 167, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
-      { type: 'platform', x: 370, y: 1200, w: 160, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
-      { type: 'platform', x: 130, y: 1050, w: 150, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
-      { type: 'platform', x: 380, y: 900, w: 150, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
-      { type: 'platform', x: 250, y: 750, w: 180, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
-      
-      { type: 'platform', x: 120, y: 600, w: 140, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
-      { type: 'platform', x: 380, y: 450, w: 140, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'platform', x: 400, y: 1200, w: 150, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'platform', x: 110, y: 1050, w: 150, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'platform', x: 390, y: 880, w: 150, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'platform', x: 120, y: 700, w: 280, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'platform', x: 400, y: 500, w: 140, h: 20, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
       
       //victory
       { type: 'victory', x: 250, y: 280, w: 500, h: 25, color: 0xFFD700, bounce: 0.0, friction: 3.0 }
@@ -68,25 +66,24 @@ const MAPS = {
       { type: 'wall', x: 490, y: 100, w: 20, h: 3700, color: 0x444444, bounce: 0.4, friction: 0.5 },
       
       //starting section - still forgiving
-      { type: 'platform', x: 150, y: 1350, w: 130, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
-      { type: 'platform', x: 380, y: 1200, w: 120, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
-      { type: 'platform', x: 120, y: 1050, w: 130, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
-      { type: 'platform', x: 400, y: 900, w: 120, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'platform', x: 100, y: 1350, w: 130, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'platform', x: 380, y: 1200, w: 155, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'platform', x: 100, y: 1050, w: 130, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
+      { type: 'platform', x: 375, y: 900, w: 200, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
       
       //first narrow section
-      { type: 'narrow', x: 200, y: 750, w: 100, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
-      { type: 'narrow', x: 420, y: 600, w: 90, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
-      { type: 'narrow', x: 150, y: 450, w: 85, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
-      { type: 'narrow', x: 390, y: 300, w: 105, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      { type: 'narrow', x: 90, y: 750, w: 100, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      { type: 'narrow', x: 420, y: 600, w: 100, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      { type: 'narrow', x: 90, y: 450, w: 100, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      { type: 'narrow', x: 420, y: 350, w: 100, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
       
       //rest area
       { type: 'safe', x: 250, y: 150, w: 160, h: 20, color: 0x228B22, bounce: 0.3, friction: 4.0 },
       
       //mixed platforms
       { type: 'platform', x: 140, y: 0, w: 110, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
-      { type: 'narrow', x: 450, y: -150, w: 80, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
-      { type: 'platform', x: 180, y: -300, w: 100, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
-      { type: 'narrow', x: 420, y: -450, w: 75, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      { type: 'narrow', x: 440, y: -150, w: 80, h: 15, color: 0x696969, bounce: 0.2, friction: 2.5 },
+      { type: 'platform', x: 140, y: -300, w: 120, h: 18, color: 0x8B4513, bounce: 0.3, friction: 3.0 },
       
       //victory
       { type: 'victory', x: 250, y: -580, w: 480, h: 25, color: 0xFFD700, bounce: 0.0, friction: 3.0 }
@@ -97,7 +94,6 @@ const MAPS = {
       { type: 'text', x: 250, y: -850, text: 'Getting better! Try Hard mode!', style: { fontSize: '16px', fill: '#FFD700' } }
     ]
   },
-
   // LEVEL 3: HARD - Ice platforms, smaller platforms, bouncy sections
   hard: {
     name: "Hard Ascent",
