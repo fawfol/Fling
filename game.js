@@ -1289,18 +1289,6 @@ function loadDecorations(scene, decorations) {
 
 //victory popup
 function handleVictory() {
-
-  //Server score submit
-  fetch('https://www.tenzinkalsang.site/modular-index/Fling/submit_score.php', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    score: score,
-    timer: Math.floor(gameTimer),
-    jumps: jumpCount,
-    map: currentMapKey
-  })});
-    
     
   console.log("🎉 Victory!");
   const scene = player.scene;
@@ -1359,6 +1347,20 @@ function handleVictory() {
         }
       });
 
+/////////////////////////////////////////////////////////// 
+      //Server score submit                              // 
+      fetch('submit_score.php', {                        //    
+        method: 'POST',                                  // 
+        headers: { 'Content-Type': 'application/json' }, //
+        body: JSON.stringify({                           //
+          score: score,                                  //
+          jumps: jumpCount,                              // 
+          timer: Math.floor(gameTimer),                  //
+          map: currentMapKey // 'easy', 'medium', etc.   //
+        })                                               //      
+      });                                                //
+///////////////////////////////////////////////////////////
+      
       //display final score
       const scoreText = scene.add.text(centerX, centerY - 170, `- Score : ${score} -`, {
         fontSize: '28px',
