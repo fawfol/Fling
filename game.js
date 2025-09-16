@@ -1,3 +1,10 @@
+//system language retrieve
+// Language detection (global)
+const userLang = (navigator.language || navigator.userLanguage).toLowerCase();
+window.currentLanguage = userLang.startsWith('ja') ? 'jp' : 'en';
+
+
+
 //map definitions - separated from game logic
 const MapOrder = ['tutorial', 'easy', 'medium', 'hard', 'extreme', 'fling'];
 const platformScores = {
@@ -88,6 +95,7 @@ const MAPS = {
       { type: 'text', x: 250, y: -850, text: 'Getting better! Try Hard mode!', style: { fontSize: '16px', fill: '#FFD700' } }
     ]
   },
+
   // LEVEL 3: HARD - Ice platforms, smaller platforms, bouncy sections
   hard: {
     name: "Hard Ascent",
@@ -368,23 +376,8 @@ const config = {
   scene: { preload, create, update }
 };
 
-const supportedLanguages = ['ja', 'en'];
-
-//get the user device language
-const deviceLanguage = navigator.language;
-
-//extract the two-letter language cod"
-const languageCode = deviceLanguage.split('-')[0];
-
-//determine the final language to use
-let currentLanguage;
-if (languageCode === 'ja' && supportedLanguages.includes('ja')) {
-  //if the device language is Japanese and tis suppported than ja
-  currentLanguage = 'ja';
-} else {
-  //default to English for all other languages, as specified
-  currentLanguage = 'en';
-}
+//langugae
+let currentLanguage = 'en'; //default: English
 
 //music asset vars
 let musicIndex = 0;
@@ -459,7 +452,8 @@ function preload() {
   };
 
   //Flickering "Loading..." with animated dots
-  const loadingBase = 'LOADING\n';
+  const loadingBase = window.currentLanguage === 'jp' ? '読み込み中\n' : 'LOADING\n';
+
   let dotCount = 0;
   const loadingText = this.add.text(width / 2, height / 2 - 80, loadingBase, fontStyle).setOrigin(0.5);
 
@@ -483,26 +477,33 @@ function preload() {
 
   //Bonus: Tips
   // rotating Tips
-  const tips = [
-    "Tip: Use you finger to tap on screen, not your toe!",
+  const tips_en = [
+    "Tip: Use your finger to tap on screen, not your toe!",
     "Tip: You can retry maps anytime!",
-    "Tip: if you 100% ignore the monkey, they won't bite you",
-    "Tip: Rage-quitting is a valid strategy. Temporarily.",
-    "Tip: Falling is part of the journey.Just...not too much",
-    "Tip: Blaming lag is allowed. Even offline.",
+    "Tip: If you 100% ignore the monkey, they won't bite you.",
+    "Tip: Falling is part of the journey. Just... not too much.",
     "Tip: Jumping off cliffs is NOT a shortcut.",
-    "Tip: Platforms aren't supposed to move. Probably.",
     "Tip: If you close your eyes, the jump gets harder.",
-    "Tip: That golden platform isn't a trap. Or is it?",
     "Tip: The walls are not your friends.",
-    "Tip: Screaming at the screen improves accuracy by 0.01%",
-    "Tip: Don’t look down. Too late.",
     "Tip: Pressing harder does not make you jump higher.",
-    "Tip: Spamming clicks won't help. Much.",
     "Tip: Holding your breath during jumps is optional.",
-    "Tip: If you can dodge a wrench, you can dodge a fall.",
-    "Tip: Every jump you miss is one step \ncloser to greatness.Or the restart button."
+    "Tip: Every jump you miss is one step closer to greatness. Or the restart button."
   ];
+  
+  const tips_jp = [
+    "ヒント: 画面をタップするのは指で！つま先じゃないよ！",
+    "ヒント: 何度でもマップをやり直せます！",
+    "ヒント: サルを完全に無視すれば、噛まれません。",
+    "ヒント: 落ちるのも旅の一部。ただし、ほどほどに。",
+    "ヒント: 崖からのジャンプは近道ではありません。",
+    "ヒント: 目を閉じるとジャンプが難しくなります。",
+    "ヒント: 壁は友達ではありません。",
+    "ヒント: 強くクリックしても高く飛べません。",
+    "ヒント: ジャンプ中に息を止めるのは任意です。",
+    "ヒント: ミスしたジャンプも成功への一歩…あるいはリスタートへ。"
+  ];
+  
+  const tips = window.currentLanguage === 'jp' ? tips_jp : tips_en;
 
 let currentTipIndex = Phaser.Math.Between(0, tips.length - 1);
 const tipText = this.add.text(width / 2, height / 2 + 80, tips[currentTipIndex], {
@@ -556,8 +557,7 @@ const tipTimer = this.time.addEvent({
     });
   this.load.audio('jumpSound', 'assets/SoundEffects/8bitJump.mp3');
   this.load.audio('scoreDing', 'assets/SoundEffects/point.mp3');
-  this.load.audio('victorySound', 'assets/SoundEffects/victorysound.mp3');
-
+  this.load.audio('victorySound', 'assets/SoundEffects/victorysound.mp3')
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -578,7 +578,7 @@ function startBGM(scene) {
     currentTrack = lofiTracks[choice];
     currentTrack.play();
     currentTrack.once('complete', () => {
-        // optionally loop one of the three, or pick another random one
+        // Optionally loop one of the three, or pick another random one
         startBGM(scene);
     });
 }
@@ -855,7 +855,7 @@ function clearCurrentMap(scene) {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////SET UP GAME FUNCTIONS/////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////SET UP GAME FUNCTIONS//////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function setupUI(scene) {
@@ -1033,7 +1033,7 @@ function setupInput(scene) {
     }
   
     player.body.setVelocity(
-      jumpDirection.x * 300 * powerLevel,
+      jumpDirection.x * 320 * powerLevel,
       jumpDirection.y * 800 * powerLevel
     );
     jumpCountText.setText(`JUMPS: ${jumpCount}`);
@@ -1100,8 +1100,7 @@ function updateEyePositions(scene) {
 }
 
 function loadMap(scene, mapName) {
-    
-  
+
   //reseter
   resetGameStats(scene);
 
@@ -1114,8 +1113,6 @@ function loadMap(scene, mapName) {
     victoryUI.forEach(obj => obj.destroy());
     victoryUI = [];
     scene.input.enabled = true;
-
-
   
     clearCurrentMap(scene);
 
@@ -1330,6 +1327,19 @@ function loadDecorations(scene, decorations) {
 
 //victory popup
 function handleVictory() {
+  //Server score submit
+  fetch('submit_score.php', {
+   method: 'POST',
+   headers: { 'Content-Type': 'application/json' },
+   body: JSON.stringify({
+     score: score,
+     jumps: jumpCount,
+     timer: Math.floor(gameTimer),
+     map: currentMapKey // 'easy', 'medium', etc.
+   })
+  });
+
+    
     
   console.log("🎉 Victory!");
   const scene = player.scene;
@@ -1388,22 +1398,8 @@ function handleVictory() {
         }
       });
 
-/////////////////////////////////////////////////////////// 
-      //Server score submit                              // 
-      fetch('submit_score.php', {                        //    
-        method: 'POST',                                  // 
-        headers: { 'Content-Type': 'application/json' }, //
-        body: JSON.stringify({                           //
-          score: score,                                  //
-          jumps: jumpCount,                              // 
-          timer: Math.floor(gameTimer),                  //
-          map: currentMapKey // 'easy', 'medium', etc.   //
-        })                                               //      
-      });                                                //
-///////////////////////////////////////////////////////////
-      
       //display final score
-      const scoreText = scene.add.text(centerX, centerY - 170, `- Score : ${score} -`, {
+      const scoreText = scene.add.text(centerX, centerY - 170, `- Score : ${score - jumpCount} -`, {
         fontSize: '28px',
         fill: '#ffffff',
         fontFamily: 'Arial',
