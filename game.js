@@ -527,8 +527,21 @@ const tipTimer = this.time.addEvent({
   //images load//////////////////////////////////////////////////
   this.load.image('forestBase', 'assets/images/8bit-jungle.jpg');
 
+  //bgm load
+  // Create an array to store unique random numbers (song indices)
+    let songIndices = [];
+
+    //loop until you have 3 unique random values
+    while (songIndices.length < 3) {
+        let randomNumber = Math.floor(Math.random() * 16) + 1; // 1-16
+        if (!songIndices.includes(randomNumber)) {
+            songIndices.push(randomNumber);
+        }
+    }
+
+
   //audios load/////////////////////////////////////////////////
-  for (let i = 1; i <= 16; i++) {
+  for (let i = 1; i <= 3; i++) {
     this.load.audio(`lofi${i}`, `assets/musics/lofi${i}.mp3`);
   }
   this.load.audio('jumpSound', 'assets/SoundEffects/8bitJump.mp3');
