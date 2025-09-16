@@ -374,8 +374,23 @@ const config = {
   scene: { preload, create, update }
 };
 
-//langugae
-let currentLanguage = 'en'; //default: English
+const supportedLanguages = ['ja', 'en'];
+
+//get the user device language
+const deviceLanguage = navigator.language;
+
+//extract the two-letter language cod"
+const languageCode = deviceLanguage.split('-')[0];
+
+//determine the final language to use
+let currentLanguage;
+if (languageCode === 'ja' && supportedLanguages.includes('ja')) {
+  //if the device language is Japanese and tis suppported than ja
+  currentLanguage = 'ja';
+} else {
+  //default to English for all other languages, as specified
+  currentLanguage = 'en';
+}
 
 //music asset vars
 let musicIndex = 0;
