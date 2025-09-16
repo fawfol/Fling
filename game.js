@@ -1,9 +1,3 @@
-//system language retrieve
-// Language detection (global)
-const userLang = (navigator.language || navigator.userLanguage).toLowerCase();
-window.currentLanguage = userLang.startsWith('ja') ? 'jp' : 'en';
-
-
 //map definitions - separated from game logic
 const MapOrder = ['tutorial', 'easy', 'medium', 'hard', 'extreme', 'fling'];
 const platformScores = {
@@ -394,6 +388,7 @@ if (languageCode === 'ja' && supportedLanguages.includes('ja')) {
 
 //music asset vars
 let musicIndex = 0;
+let songIndices = [];
 let lofiTracks = [];
 let currentTrack = null;
 
@@ -544,7 +539,7 @@ const tipTimer = this.time.addEvent({
 
   //bgm load
   // Create an array to store unique random numbers (song indices)
-    let songIndices = [];
+    // created in global : let songIndices = [];
 
     //loop until you have 3 unique random values
     while (songIndices.length < 3) {
@@ -555,29 +550,47 @@ const tipTimer = this.time.addEvent({
     }
 
 
-  //audios load/////////////////////////////////////////////////
-  for (let i = 1; i <= 3; i++) {
-    this.load.audio(`lofi${i}`, `assets/musics/lofi${i}.mp3`);
-  }
+    //audios load/////////////////////////////////////////////////
+    songIndices.forEach(idx => {
+        this.load.audio(`lofi${idx}`, `assets/musics/lofi${idx}.mp3`);
+    });
   this.load.audio('jumpSound', 'assets/SoundEffects/8bitJump.mp3');
   this.load.audio('scoreDing', 'assets/SoundEffects/point.mp3');
-  this.load.audio('victorySound', 'assets/SoundEffects/victorysound.mp3')
+  this.load.audio('victorySound', 'assets/SoundEffects/victorysound.mp3');
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////CREATE SECTION////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function create() {
-  for (let i = 1; i <= 16; i++) {
-    lofiTracks.push(this.sound.add(`lofi${i}`, { volume: 0.6 }));
-  }
+    songIndices.forEach(idx => {
+        lofiTracks.push(this.sound.add(`lofi${idx}`, { volume: 0.6 }));
+    });
 
   victorySfx = this.sound.add('victorySound', { volume: 0.6 });
   jumpSfx = this.sound.add('jumpSound', { volume: 0.13 });
   scoreDingSfx = this.sound.add('scoreDing', { volume: 0.5});
+    
+  //play one of the three selected tracks immediately (random among them)
+function startBGM(scene) {
+    const choice = Phaser.Math.Between(0, lofiTracks.length - 1);
+    currentTrack = lofiTracks[choice];
+    currentTrack.play();
+    currentTrack.once('complete', () => {
+        // optionally loop one of the three, or pick another random one
+        startBGM(scene);
+    });
+}
 
-
-  playNextTrack(this);
+//ensure sound starts as soon as possible
+if (this.sound.locked) {
+    this.sound.once('unlocked', () => {
+        startBGM(this);
+    });
+} else {
+    startBGM(this);
+}
   setupUI(this);
   setupPlayer(this);
   setupInput(this);
