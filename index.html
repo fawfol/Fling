@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta property="og:description" content="Play Fling Tower – a vertical platformer that tests your skill and timing. Try to climb the impossible tower!" />
   <meta property="og:image" content="https://www.tenzinkalsang.site/modular-index/Fling/assets/images/favicon.ico"/>
   <meta property="og:url" content="https://www.tenzinkalsang.site/modular-index/Fling" />
@@ -19,19 +20,47 @@
       align-items: center;
     }
     canvas {
-      display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform-origin: center center;
+        display: block;
     }
   </style>
 </head>
 <body>
   
-  <scriptage = lang.startsWith('ja') ? 'jp' : 'en';
+  <script>
+  const lang = (navigator.language || navigator.userLanguage).toLowerCase();
+  const pageLang = lang.startsWith('ja') ? 'jp' : 'en';
+  window.currentLanguage = pageLang;
   </script>
+
   
   <!-- phaser CDN -->
   <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.js"></script>
 
   <!-- Game -->
   <script src="game.js"></script>
+  
+  <!-- zoom in on mobile game screen -->
+  <script>
+function scaleCanvas() {
+  const canvas = document.querySelector("canvas");
+  if (!canvas) return;
+
+  const baseWidth = 500; 
+  const baseHeight = 900;
+  const scaleX = window.innerWidth / baseWidth;
+  const scaleY = window.innerHeight / baseHeight;
+  const scale = Math.min(scaleX, scaleY) * 0.85; // 85% zoom
+
+  canvas.style.transform = `translate(-50%, -50%) scale(${scale})`;
+}
+
+window.addEventListener("resize", scaleCanvas);
+window.addEventListener("load", scaleCanvas);
+</script>
+
 </body>
 </html>
