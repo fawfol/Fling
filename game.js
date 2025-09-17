@@ -322,7 +322,7 @@ const config = {
   physics: {
     default: 'arcade',
     arcade: {
-      gravity: { y: 1000 },
+      gravity: { y: 1500 },
       debug: false
     }
   },
@@ -863,8 +863,8 @@ function setupInput(scene) {
       jumpDirection = directionVector;
     }
     player.body.setVelocity(
-      jumpDirection.x * 320 * powerLevel,
-      jumpDirection.y * 800 * powerLevel
+      jumpDirection.x * 500 * powerLevel,
+      jumpDirection.y * 1200 * powerLevel
     );
     jumpCountText.setText(`JUMPS: ${jumpCount}`);
     jumpSfx.play();
